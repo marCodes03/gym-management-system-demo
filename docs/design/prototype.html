@@ -1,0 +1,3620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mad Max Gym — Interactive Design Canvas Prototype</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    /* =====================================================================
+       MAD MAX GYM — TACTILE METALLIC & ROYAL BLUE DESIGN SYSTEM TOKENS
+       Ref: brand.md & rules/04-ui-ux-standards.md
+       ===================================================================== */
+    :root {
+      --obsidian: #0B0D11;
+      --carbon: #111827;
+      --slate-900: #161B26;
+      --gunmetal: #374151;
+      --steel: #4B5563;
+      --silver: #9CA3AF;
+      --silver-border: #D1D5DB;
+      --silver-line: #E5E7EB;
+      --silver-canvas: #F3F4F6;
+      --pure-white: #FFFFFF;
+
+      --royal: #2563EB;
+      --royal-hover: #1D4ED8;
+      --royal-deep: #1E3A8A;
+      --royal-light: #DBEAFE;
+      --royal-50: #EFF6FF;
+
+      --emerald: #059669;
+      --emerald-bg: #ECFDF5;
+      --emerald-border: #A7F3D0;
+      --amber: #D97706;
+      --amber-bg: #FFFBEB;
+      --amber-border: #FDE68A;
+      --rose: #DC2626;
+      --rose-bg: #FEF2F2;
+      --rose-border: #FECACA;
+
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+      --font-receipt: 'Courier New', Courier, monospace;
+
+      --shadow-resting: 0 1px 3px rgba(11, 13, 17, 0.06), 0 4px 12px rgba(11, 13, 17, 0.04);
+      --shadow-floating: 0 4px 6px -1px rgba(11, 13, 17, 0.10), 0 12px 24px -4px rgba(29, 78, 216, 0.08);
+      --shadow-modal: 0 20px 30px -10px rgba(11, 13, 17, 0.30), 0 10px 15px -3px rgba(0, 0, 0, 0.16);
+
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --studio-bar-h: 54px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      font-family: var(--font-sans);
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--obsidian);
+      background: #0D1017;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::selection { background: var(--royal-light); color: var(--royal-deep); }
+    :focus-visible { outline: 2px solid var(--royal); outline-offset: 2px; }
+
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar { width: 7px; height: 7px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.45); border-radius: 99px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(107, 114, 128, 0.7); }
+
+    .mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+    .req { color: var(--rose); margin-left: 2px; }
+
+    /* =====================================================================
+       BUTTONS & TACTILE PHYSICS
+       ===================================================================== */
+    button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      height: 38px;
+      padding: 0 16px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 600;
+      transition: transform 80ms ease, background 150ms ease, box-shadow 150ms ease, border-color 150ms ease;
+      white-space: nowrap;
+      user-select: none;
+    }
+    .btn-lg { height: 46px; padding: 0 22px; font-size: 14.5px; border-radius: 10px; }
+    .btn-sm { height: 32px; padding: 0 12px; font-size: 12.5px; border-radius: 7px; }
+
+    .btn-primary {
+      color: var(--pure-white);
+      background: linear-gradient(180deg, #3B82F6 0%, #2563EB 60%, #1D4ED8 100%);
+      border-top: 1px solid rgba(255, 255, 255, 0.28);
+      box-shadow: 0 2px 0 var(--royal-deep), 0 4px 10px rgba(37, 99, 235, 0.26);
+    }
+    .btn-primary:hover:not(:disabled) {
+      background: linear-gradient(180deg, #4F92FF 0%, #2563EB 55%, #1D4ED8 100%);
+    }
+    .btn-primary:active:not(:disabled) {
+      transform: translateY(2px);
+      box-shadow: 0 0 0 var(--royal-deep), inset 0 2px 4px rgba(0, 0, 0, 0.35);
+    }
+
+    .btn-secondary {
+      color: var(--obsidian);
+      background: var(--pure-white);
+      border: 1px solid var(--silver-border);
+      box-shadow: 0 1px 2px rgba(11, 13, 17, 0.05);
+    }
+    .btn-secondary:hover:not(:disabled) { background: #F9FAFB; border-color: var(--silver); }
+    .btn-secondary:active:not(:disabled) { transform: translateY(1px); }
+
+    .btn-dark {
+      color: var(--pure-white);
+      background: var(--carbon);
+      border: 1px solid #263042;
+      box-shadow: 0 2px 0 #050608;
+    }
+    .btn-dark:hover:not(:disabled) { background: #1F2937; }
+    .btn-dark:active:not(:disabled) { transform: translateY(1px); }
+
+    .btn-danger {
+      color: var(--pure-white);
+      background: linear-gradient(180deg, #EF4444 0%, #DC2626 100%);
+      border-top: 1px solid rgba(255,255,255,0.22);
+      box-shadow: 0 2px 0 #991B1B, 0 4px 10px rgba(220, 38, 38, 0.22);
+    }
+    .btn-danger:active:not(:disabled) { transform: translateY(2px); box-shadow: none; }
+
+    .btn-ghost {
+      color: var(--steel);
+      background: transparent;
+    }
+    .btn-ghost:hover:not(:disabled) { background: var(--silver-canvas); color: var(--obsidian); }
+
+    /* =====================================================================
+       STUDIO TOP BAR (MODE SWITCHER & CANVAS CONTROLS)
+       ===================================================================== */
+    .studio-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--studio-bar-h);
+      background: var(--obsidian);
+      border-bottom: 1px solid #1E2533;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+      z-index: 900;
+      color: var(--pure-white);
+      gap: 16px;
+    }
+    .studio-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 210px;
+    }
+    .studio-brand-title {
+      font-size: 13.5px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      color: var(--pure-white);
+      line-height: 1.15;
+    }
+    .studio-brand-sub {
+      font-size: 11px;
+      color: var(--silver);
+      font-weight: 500;
+    }
+
+    .mode-switch {
+      display: inline-flex;
+      background: #161B26;
+      border: 1px solid #263042;
+      border-radius: 9px;
+      padding: 3px;
+      gap: 2px;
+    }
+    .mode-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      height: 32px;
+      padding: 0 14px;
+      border-radius: 6px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--silver);
+      transition: background 150ms ease, color 150ms ease;
+    }
+    .mode-btn:hover { color: var(--pure-white); }
+    .mode-btn.active {
+      background: var(--royal);
+      color: var(--pure-white);
+      box-shadow: 0 1px 4px rgba(37, 99, 235, 0.4);
+    }
+
+    .studio-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 240px;
+      justify-content: flex-end;
+    }
+    .zoom-group {
+      display: inline-flex;
+      align-items: center;
+      background: #161B26;
+      border: 1px solid #263042;
+      border-radius: 8px;
+      padding: 2px;
+    }
+    .zoom-btn {
+      height: 28px;
+      min-width: 28px;
+      padding: 0 8px;
+      border-radius: 6px;
+      color: #D1D5DB;
+      font-size: 12px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .zoom-btn:hover { background: #263042; color: #FFFFFF; }
+    .zoom-readout {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      color: var(--silver);
+      padding: 0 8px;
+      min-width: 48px;
+      text-align: center;
+    }
+    .role-pill-switch {
+      display: inline-flex;
+      align-items: center;
+      background: #161B26;
+      border: 1px solid #263042;
+      border-radius: 8px;
+      padding: 2px;
+      font-size: 12px;
+    }
+    .role-pill-btn {
+      height: 28px;
+      padding: 0 10px;
+      border-radius: 6px;
+      color: var(--silver);
+      font-weight: 600;
+      font-size: 11.5px;
+    }
+    .role-pill-btn.active { background: #263042; color: #FFFFFF; }
+
+    /* =====================================================================
+       MODE 1: DESIGN CANVAS BOARD (FIGMA-STYLE PAN/ZOOM VIEWPORT)
+       ===================================================================== */
+    #canvas-view {
+      position: fixed;
+      top: var(--studio-bar-h);
+      left: 0; right: 0; bottom: 0;
+      background-color: #0D1017;
+      background-image: radial-gradient(rgba(156, 163, 175, 0.16) 1px, transparent 1px);
+      background-size: 24px 24px;
+      overflow: hidden;
+      cursor: grab;
+      user-select: none;
+    }
+    #canvas-view.panning { cursor: grabbing; }
+    #canvas-view.hidden { display: none; }
+
+    #canvas-stage {
+      position: absolute;
+      top: 0; left: 0;
+      transform-origin: 0 0;
+      will-change: transform;
+      padding: 80px 100px 140px;
+    }
+
+    .canvas-header-block {
+      margin-bottom: 44px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      width: 5360px;
+      border-bottom: 1px solid #1E2533;
+      padding-bottom: 24px;
+    }
+    .canvas-board-title {
+      font-size: 52px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: #FFFFFF;
+    }
+    .canvas-board-meta {
+      font-size: 20px;
+      color: var(--silver);
+      margin-top: 8px;
+    }
+    .canvas-legend {
+      display: flex;
+      gap: 28px;
+      align-items: center;
+      color: var(--silver);
+      font-size: 18px;
+      font-weight: 500;
+    }
+    .legend-dot {
+      width: 12px; height: 12px; border-radius: 99px; display: inline-block; margin-right: 8px;
+    }
+
+    .canvas-row {
+      display: flex;
+      gap: 80px;
+      margin-bottom: 96px;
+      align-items: flex-start;
+    }
+
+    .artboard-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      width: 1280px;
+      flex-shrink: 0;
+    }
+    .artboard-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 4px;
+    }
+    .artboard-title-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .artboard-num {
+      font-family: var(--font-mono);
+      font-size: 16px;
+      font-weight: 700;
+      color: #93C5FD;
+      background: rgba(37, 99, 235, 0.22);
+      border: 1px solid rgba(59, 130, 246, 0.42);
+      padding: 4px 12px;
+      border-radius: 7px;
+    }
+    .artboard-name {
+      font-size: 26px;
+      font-weight: 700;
+      color: #F9FAFB;
+      letter-spacing: -0.015em;
+    }
+    .artboard-dim {
+      font-family: var(--font-mono);
+      font-size: 15px;
+      color: #9CA3AF;
+    }
+    .artboard-play-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      height: 40px;
+      padding: 0 18px;
+      border-radius: 8px;
+      background: #161B26;
+      border: 1px solid #374151;
+      color: #F3F4F6;
+      font-size: 15px;
+      font-weight: 600;
+      transition: all 150ms ease;
+    }
+    .artboard-play-btn:hover {
+      background: var(--royal);
+      border-color: var(--royal);
+      color: #FFFFFF;
+    }
+
+    .artboard-frame {
+      width: 1280px;
+      height: 780px;
+      border-radius: 14px;
+      overflow: hidden;
+      background: var(--silver-canvas);
+      border: 1px solid #263042;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.04);
+      position: relative;
+      cursor: default;
+      transition: border-color 180ms ease, box-shadow 180ms ease;
+    }
+    .artboard-frame:hover {
+      border-color: rgba(59, 130, 246, 0.65);
+      box-shadow: 0 28px 64px rgba(0, 0, 0, 0.65), 0 0 0 2px rgba(37, 99, 235, 0.35);
+    }
+    .artboard-click-veil {
+      position: absolute;
+      inset: 0;
+      z-index: 20;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    /* Bottom Floating Canvas Navigator Dock */
+    .canvas-dock {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(11, 13, 17, 0.92);
+      backdrop-filter: blur(12px);
+      border: 1px solid #263042;
+      border-radius: 12px;
+      padding: 6px 8px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      z-index: 850;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+    }
+    .dock-item {
+      height: 30px;
+      padding: 0 11px;
+      border-radius: 7px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #9CA3AF;
+      transition: all 140ms ease;
+      white-space: nowrap;
+    }
+    .dock-item:hover { background: #1F2937; color: #FFFFFF; }
+    .dock-item.active { background: var(--royal); color: #FFFFFF; }
+    .dock-sep { width: 1px; height: 18px; background: #263042; margin: 0 4px; }
+    .dock-hint {
+      font-size: 11px;
+      color: #6B7280;
+      padding: 0 8px;
+      white-space: nowrap;
+    }
+
+    /* =====================================================================
+       MODE 2: INTERACTIVE PLAY MODE (LIVE APP SHELL)
+       ===================================================================== */
+    #play-view {
+      position: fixed;
+      top: var(--studio-bar-h);
+      left: 0; right: 0; bottom: 0;
+      background: var(--silver-canvas);
+      display: flex;
+      overflow: hidden;
+    }
+    #play-view.hidden { display: none; }
+
+    /* App Shell Layout (used in both Play Mode & Artboard Previews) */
+    .app-shell {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      background: var(--silver-canvas);
+      color: var(--obsidian);
+      overflow: hidden;
+    }
+
+    /* Collapsible Dark Obsidian Sidebar (230px <-> 64px) */
+    .sidebar {
+      width: 230px;
+      background: var(--obsidian);
+      color: #E5E7EB;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      border-right: 1px solid #1C2331;
+      transition: width 200ms var(--ease-out);
+      position: relative;
+      z-index: 30;
+    }
+    .sidebar.collapsed { width: 64px; }
+
+    .sidebar-header {
+      height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      border-bottom: 1px solid #1C2331;
+      gap: 10px;
+    }
+    .sidebar.collapsed .sidebar-header { justify-content: center; padding: 0 8px; }
+    .sidebar-brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      overflow: hidden;
+    }
+    .sidebar-brand-name {
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      color: #FFFFFF;
+      white-space: nowrap;
+    }
+    .sidebar-brand-tag {
+      font-size: 10.5px;
+      color: var(--silver);
+      white-space: nowrap;
+    }
+    .sidebar.collapsed .sidebar-brand-text { display: none; }
+
+    .sidebar-toggle-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      color: var(--silver);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .sidebar-toggle-btn:hover { background: #1F2937; color: #FFFFFF; }
+    .sidebar.collapsed .sidebar-toggle-btn {
+      position: absolute;
+      right: -13px;
+      top: 17px;
+      width: 26px;
+      height: 26px;
+      background: var(--obsidian);
+      border: 1px solid #2D3748;
+      border-radius: 99px;
+      z-index: 40;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .nav-group-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #6B7280;
+      padding: 0 10px 6px;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    .sidebar.collapsed .nav-group-label { display: none; }
+
+    .nav-item {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      width: 100%;
+      height: 38px;
+      padding: 0 11px;
+      border-radius: 8px;
+      color: #9CA3AF;
+      font-size: 13.5px;
+      font-weight: 500;
+      transition: background 140ms ease, color 140ms ease;
+      text-align: left;
+    }
+    .sidebar.collapsed .nav-item { justify-content: center; padding: 0; }
+    .nav-item:hover { background: #171D28; color: #F9FAFB; }
+    .nav-item.active {
+      background: var(--royal);
+      color: #FFFFFF;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+    }
+    .sidebar.collapsed .nav-item-label { display: none; }
+
+    /* Instantaneous hover tooltip when collapsed to 64px rail */
+    .sidebar.collapsed .nav-item::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      left: 56px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: var(--obsidian);
+      color: #FFFFFF;
+      border: 1px solid #2D3748;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+      z-index: 100;
+    }
+    .sidebar.collapsed .nav-item:hover::after { opacity: 1; }
+
+    .sidebar-footer {
+      border-top: 1px solid #1C2331;
+      padding: 12px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .staff-chip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 8px;
+      border-radius: 8px;
+      background: #141923;
+    }
+    .sidebar.collapsed .staff-chip { justify-content: center; padding: 6px; }
+    .staff-avatar {
+      width: 30px; height: 30px;
+      border-radius: 8px;
+      background: var(--royal);
+      color: #FFFFFF;
+      font-size: 12px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .staff-meta { overflow: hidden; }
+    .staff-name { font-size: 12.5px; font-weight: 600; color: #F9FAFB; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .staff-role { font-size: 11px; color: var(--silver); }
+    .sidebar.collapsed .staff-meta { display: none; }
+
+    /* Main Content Area */
+    .main-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      overflow: hidden;
+    }
+    .topbar {
+      height: 62px;
+      background: var(--pure-white);
+      border-bottom: 1px solid var(--silver-line);
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      gap: 16px;
+    }
+    .topbar-left { display: flex; align-items: center; gap: 14px; }
+    .page-title {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--obsidian);
+    }
+    .page-subtitle {
+      font-size: 13px;
+      color: var(--steel);
+    }
+    .topbar-actions { display: flex; align-items: center; gap: 10px; }
+
+    .page-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 28px 36px;
+    }
+
+    /* =====================================================================
+       COMMON UI COMPONENTS (CARDS, TABLES, BADGES, FORMS, SKELETONS)
+       ===================================================================== */
+    .surface-card {
+      background: var(--pure-white);
+      border: 1px solid var(--silver-border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .surface-card-pad { padding: 20px 22px; }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .kpi-tile {
+      background: var(--pure-white);
+      border: 1px solid var(--silver-border);
+      border-radius: 12px;
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .kpi-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--steel);
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .kpi-val {
+      font-family: var(--font-mono);
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--obsidian);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+    .kpi-foot {
+      font-size: 12.5px;
+      color: var(--steel);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      height: 22px;
+      padding: 0 8px;
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .badge-emerald { background: var(--emerald-bg); color: #047857; border: 1px solid var(--emerald-border); }
+    .badge-amber { background: var(--amber-bg); color: #B45309; border: 1px solid var(--amber-border); }
+    .badge-rose { background: var(--rose-bg); color: #B91C1C; border: 1px solid var(--rose-border); }
+    .badge-royal { background: var(--royal-50); color: var(--royal-hover); border: 1px solid var(--royal-light); }
+    .badge-gray { background: #F3F4F6; color: var(--gunmetal); border: 1px solid var(--silver-border); }
+    .badge-dark { background: var(--obsidian); color: #FFFFFF; }
+
+    /* Toolbar & Filter Pills */
+    .table-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--silver-line);
+      flex-wrap: wrap;
+    }
+    .search-box {
+      position: relative;
+      flex: 1;
+      min-width: 240px;
+      max-width: 420px;
+    }
+    .search-box svg {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--silver);
+      pointer-events: none;
+    }
+    .input, .select, .textarea {
+      width: 100%;
+      height: 38px;
+      padding: 0 12px;
+      border: 1px solid var(--silver-border);
+      border-radius: 8px;
+      background: var(--pure-white);
+      color: var(--obsidian);
+      font-family: inherit;
+      font-size: 13.5px;
+      transition: border-color 140ms ease, box-shadow 140ms ease;
+    }
+    .search-box .input { padding-left: 36px; }
+    .input:focus, .select:focus, .textarea:focus {
+      outline: none;
+      border-color: var(--royal);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
+    }
+    .input.error, .select.error {
+      border-color: var(--rose);
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
+    }
+    .textarea { height: auto; padding: 10px 12px; resize: vertical; min-height: 76px; }
+    .input:read-only, .input:disabled { background: var(--silver-canvas); color: var(--steel); cursor: not-allowed; }
+
+    .field-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+    .field-label { font-size: 13px; font-weight: 600; color: var(--gunmetal); }
+    .field-hint { font-size: 12px; color: var(--steel); }
+    .field-err { font-size: 12px; color: var(--rose); font-weight: 500; }
+
+    .pill-group {
+      display: inline-flex;
+      background: var(--silver-canvas);
+      border: 1px solid var(--silver-line);
+      border-radius: 8px;
+      padding: 3px;
+      gap: 2px;
+    }
+    .pill-btn {
+      height: 30px;
+      padding: 0 12px;
+      border-radius: 6px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--steel);
+      transition: all 140ms ease;
+    }
+    .pill-btn:hover { color: var(--obsidian); }
+    .pill-btn.active {
+      background: var(--pure-white);
+      color: var(--obsidian);
+      box-shadow: 0 1px 3px rgba(11, 13, 17, 0.08);
+    }
+
+    /* Data Table + In-Column Kebab Action Ergonomics */
+    .data-table-wrap { width: 100%; overflow-x: auto; }
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    table.data-table th {
+      padding: 11px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gunmetal);
+      background: #F9FAFB;
+      border-bottom: 1px solid var(--silver-line);
+      white-space: nowrap;
+    }
+    table.data-table td {
+      padding: 13px 16px;
+      border-bottom: 1px solid var(--silver-line);
+      font-size: 13.5px;
+      color: var(--obsidian);
+      vertical-align: middle;
+    }
+    table.data-table tbody tr:last-child td { border-bottom: none; }
+    table.data-table tbody tr:hover { background: #F8FAFC; }
+    .td-kebab-cell {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .kebab-trigger {
+      width: 30px; height: 30px;
+      border-radius: 7px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--steel);
+      transition: background 120ms ease, color 120ms ease;
+      flex-shrink: 0;
+    }
+    .kebab-trigger:hover { background: var(--royal-light); color: var(--royal-hover); }
+
+    /* Floating Kebab Menu Portal (Escapes overflow:auto) */
+    .kebab-portal {
+      position: fixed;
+      min-width: 196px;
+      background: var(--pure-white);
+      border: 1px solid var(--silver-border);
+      border-radius: 10px;
+      box-shadow: var(--shadow-floating);
+      padding: 5px;
+      z-index: 1200;
+      display: none;
+    }
+    .kebab-portal.open { display: block; }
+    .kebab-item {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 8px 10px;
+      border-radius: 7px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--obsidian);
+      text-align: left;
+    }
+    .kebab-item:hover { background: var(--silver-canvas); }
+    .kebab-item.danger { color: var(--rose); }
+    .kebab-item.danger:hover { background: var(--rose-bg); }
+    .kebab-divider { height: 1px; background: var(--silver-line); margin: 4px 0; }
+
+    /* Shimmer Skeleton Loaders */
+    @keyframes shimmer {
+      0% { background-position: -400px 0; }
+      100% { background-position: 400px 0; }
+    }
+    .skeleton {
+      background: linear-gradient(90deg, #E5E7EB 25%, #F3F4F6 50%, #E5E7EB 75%);
+      background-size: 800px 100%;
+      animation: shimmer 1.2s infinite linear;
+      border-radius: 6px;
+    }
+
+    /* =====================================================================
+       LOGIN SCREEN
+       ===================================================================== */
+    .login-screen {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      width: 100%;
+      height: 100%;
+      background: var(--pure-white);
+    }
+    .login-brand-panel {
+      background: var(--obsidian);
+      color: #FFFFFF;
+      padding: 48px 52px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+    .login-brand-panel::after {
+      content: '';
+      position: absolute;
+      right: -120px;
+      bottom: -120px;
+      width: 380px;
+      height: 380px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(37, 99, 235, 0.24) 0%, rgba(11, 13, 17, 0) 70%);
+      pointer-events: none;
+    }
+    .login-hero-title {
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.12;
+      margin-top: 28px;
+      max-width: 440px;
+    }
+    .login-hero-copy {
+      font-size: 14.5px;
+      color: var(--silver);
+      margin-top: 14px;
+      max-width: 420px;
+      line-height: 1.6;
+    }
+    .login-metrics-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      border-top: 1px solid #1E2533;
+      padding-top: 22px;
+      position: relative;
+      z-index: 2;
+    }
+    .login-stat-val { font-family: var(--font-mono); font-size: 20px; font-weight: 800; color: #FFFFFF; }
+    .login-stat-lbl { font-size: 12px; color: var(--silver); margin-top: 2px; }
+
+    .login-form-panel {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      background: var(--silver-canvas);
+    }
+    .login-card {
+      width: 100%;
+      max-width: 410px;
+      background: var(--pure-white);
+      border: 1px solid var(--silver-border);
+      border-radius: 14px;
+      padding: 34px 32px;
+      box-shadow: var(--shadow-resting);
+    }
+    .password-wrap { position: relative; }
+    .password-wrap .input { padding-right: 40px; }
+    .eye-btn {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 30px; height: 30px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--steel);
+    }
+    .eye-btn:hover { background: var(--silver-canvas); color: var(--obsidian); }
+
+    /* =====================================================================
+       FAST SIGN-IN TERMINAL & FULLSCREEN KIOSK
+       ===================================================================== */
+    .checkin-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 20px;
+      align-items: start;
+    }
+    .kiosk-screen {
+      width: 100%;
+      height: 100%;
+      background: var(--obsidian);
+      color: #FFFFFF;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 28px 40px;
+      position: relative;
+    }
+    .kiosk-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .kiosk-center {
+      max-width: 680px;
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 20px;
+    }
+    .kiosk-heading {
+      font-size: 36px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: #FFFFFF;
+    }
+    .kiosk-sub { font-size: 15px; color: var(--silver); }
+    .kiosk-input-row {
+      display: flex;
+      width: 100%;
+      gap: 12px;
+    }
+    .kiosk-input {
+      flex: 1;
+      height: 58px;
+      padding: 0 20px;
+      border-radius: 12px;
+      background: #141923;
+      border: 2px solid #2D3748;
+      color: #FFFFFF;
+      font-family: var(--font-mono);
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    .kiosk-input:focus {
+      outline: none;
+      border-color: var(--royal);
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.28);
+    }
+    .kiosk-banner {
+      width: 100%;
+      border-radius: 14px;
+      padding: 22px 24px;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      border: 1px solid transparent;
+    }
+    .kiosk-banner.granted { background: rgba(5, 150, 105, 0.16); border-color: #10B981; }
+    .kiosk-banner.warn { background: rgba(217, 119, 6, 0.16); border-color: #F59E0B; }
+    .kiosk-banner.denied { background: rgba(220, 38, 38, 0.18); border-color: #EF4444; }
+    .kiosk-quick-chips {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+    }
+    .kiosk-chip {
+      height: 32px;
+      padding: 0 12px;
+      border-radius: 99px;
+      background: #161B26;
+      border: 1px solid #2D3748;
+      color: #D1D5DB;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .kiosk-chip:hover { border-color: var(--royal); color: #FFFFFF; }
+
+    /* =====================================================================
+       PEAK HOURS BAR CHART (OWNER DASHBOARD)
+       ===================================================================== */
+    .chart-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      height: 170px;
+      padding-top: 18px;
+    }
+    .chart-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      height: 100%;
+      justify-content: flex-end;
+    }
+    .chart-bar-wrap {
+      width: 100%;
+      flex: 1;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .chart-bar {
+      width: 100%;
+      max-width: 34px;
+      border-radius: 6px 6px 2px 2px;
+      background: #CBD5E1;
+      transition: height 280ms var(--ease-out), background 150ms ease;
+      position: relative;
+    }
+    .chart-bar.peak { background: var(--royal); }
+    .chart-bar:hover { background: var(--royal-hover); }
+    .chart-val { font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: var(--gunmetal); }
+    .chart-lbl { font-family: var(--font-mono); font-size: 11px; color: var(--steel); }
+
+    /* =====================================================================
+       540px RIGHT SLIDE-IN CRUD DRAWER
+       ===================================================================== */
+    .drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(11, 13, 17, 0.55);
+      backdrop-filter: blur(2px);
+      z-index: 1000;
+      display: none;
+      justify-content: flex-end;
+    }
+    .drawer-backdrop.open { display: flex; }
+    .drawer-panel {
+      width: 100%;
+      max-width: 540px;
+      height: 100%;
+      background: var(--pure-white);
+      box-shadow: -12px 0 36px rgba(11, 13, 17, 0.22);
+      display: flex;
+      flex-direction: column;
+      animation: drawerSlideIn 220ms var(--ease-out);
+    }
+    @keyframes drawerSlideIn {
+      from { transform: translateX(100%); }
+      to { transform: translateX(0); }
+    }
+    .drawer-header {
+      padding: 20px 28px;
+      border-bottom: 1px solid var(--silver-line);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .drawer-title { font-size: 19px; font-weight: 700; color: var(--obsidian); letter-spacing: -0.01em; }
+    .drawer-sub { font-size: 13px; color: var(--steel); margin-top: 3px; }
+    .drawer-body { flex: 1; overflow-y: auto; padding: 22px 28px; }
+    .drawer-footer {
+      padding: 16px 28px;
+      border-top: 1px solid var(--silver-line);
+      background: #F9FAFB;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    /* =====================================================================
+       CENTERED MODALS (PAYMENT, 80mm RECEIPT, QR PASS, CONFIRMATIONS)
+       ===================================================================== */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(11, 13, 17, 0.62);
+      backdrop-filter: blur(3px);
+      z-index: 1100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal-box {
+      width: 100%;
+      max-width: 560px;
+      max-height: 90vh;
+      background: var(--pure-white);
+      border-radius: 14px;
+      box-shadow: var(--shadow-modal);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: modalScaleIn 180ms var(--ease-out);
+    }
+    .modal-box.sm { max-width: 430px; }
+    .modal-box.lg { max-width: 680px; }
+    @keyframes modalScaleIn {
+      from { opacity: 0; transform: scale(0.96) translateY(6px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .modal-header {
+      padding: 18px 24px;
+      background: var(--obsidian);
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .modal-header-title { font-size: 17px; font-weight: 700; }
+    .modal-header-sub { font-size: 12.5px; color: var(--silver); margin-top: 2px; }
+    .modal-body { padding: 22px 24px; overflow-y: auto; flex: 1; }
+    .modal-footer {
+      padding: 14px 24px;
+      border-top: 1px solid var(--silver-line);
+      background: #F9FAFB;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    /* 80mm ESC/POS Thermal Receipt Styling */
+    .thermal-paper {
+      width: 312px;
+      margin: 0 auto;
+      background: #FFFFFF;
+      color: #0B0D11;
+      border: 1px dashed var(--silver-border);
+      padding: 18px 16px;
+      font-family: var(--font-receipt);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .thermal-rule { border-top: 1px dashed #374151; margin: 10px 0; }
+    .thermal-row { display: flex; justify-content: space-between; gap: 8px; }
+    .thermal-center { text-align: center; }
+
+    /* Member QR Pass Card */
+    .pass-card {
+      background: var(--obsidian);
+      color: #FFFFFF;
+      border-radius: 14px;
+      padding: 24px;
+      border: 1px solid #263042;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .pass-qr-frame {
+      background: #FFFFFF;
+      padding: 14px;
+      border-radius: 12px;
+      border: 3px solid var(--royal);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+    }
+
+    /* Top-Right Polymorphic Toasts */
+    .toast-stack {
+      position: fixed;
+      top: 68px;
+      right: 20px;
+      z-index: 1400;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+    }
+    .toast {
+      pointer-events: auto;
+      min-width: 280px;
+      max-width: 390px;
+      padding: 12px 15px;
+      border-radius: 10px;
+      background: var(--obsidian);
+      color: #FFFFFF;
+      border: 1px solid #263042;
+      box-shadow: var(--shadow-floating);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      animation: toastIn 200ms var(--ease-out);
+    }
+    .toast.success { background: #064E3B; border-color: #10B981; }
+    .toast.error { background: #7F1D1D; border-color: #EF4444; }
+    .toast.warning { background: #78350F; border-color: #F59E0B; }
+    .toast.info { background: #1E3A8A; border-color: #3B82F6; }
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateX(18px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    /* Print Isolation for 80mm Thermal Receipt */
+    @media print {
+      body * { visibility: hidden !important; }
+      #print-receipt-area, #print-receipt-area * { visibility: visible !important; }
+      #print-receipt-area {
+        position: fixed;
+        top: 0; left: 0;
+        width: 80mm;
+        border: none !important;
+        padding: 4mm !important;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <!-- ===================================================================
+       STUDIO TOP BAR
+       =================================================================== -->
+  <header class="studio-bar">
+    <div class="studio-brand">
+      <div id="studio-logo-slot"></div>
+      <div>
+        <div class="studio-brand-title">MAD MAX GYM</div>
+        <div class="studio-brand-sub">Design Canvas &amp; Interactive Prototype</div>
+      </div>
+    </div>
+
+    <div class="mode-switch" role="tablist" aria-label="Prototype mode">
+      <button id="btn-mode-canvas" class="mode-btn active" onclick="setMode('canvas')" role="tab" aria-selected="true">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        Canvas Board
+      </button>
+      <button id="btn-mode-play" class="mode-btn" onclick="setMode('play')" role="tab" aria-selected="false">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+        Interactive Play Mode
+      </button>
+    </div>
+
+    <div class="studio-controls">
+      <!-- Canvas Zoom Controls -->
+      <div id="canvas-zoom-controls" class="zoom-group">
+        <button class="zoom-btn" onclick="zoomCanvas(-0.1)" title="Zoom Out">−</button>
+        <span id="zoom-readout" class="zoom-readout">32%</span>
+        <button class="zoom-btn" onclick="zoomCanvas(0.1)" title="Zoom In">+</button>
+        <button class="zoom-btn" onclick="fitCanvasToView()" title="Fit All Artboards">Fit</button>
+        <button class="zoom-btn" onclick="setCanvasZoom(0.75)" title="75% Zoom">75%</button>
+      </div>
+
+      <!-- Play Mode Role Switcher -->
+      <div id="play-role-controls" class="role-pill-switch" style="display:none;">
+        <button id="role-btn-admin" class="role-pill-btn active" onclick="switchDemoRole('ADMIN')">Owner (ADMIN)</button>
+        <button id="role-btn-desk" class="role-pill-btn" onclick="switchDemoRole('FRONT_DESK')">Front Desk</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================================================================
+       MODE 1: DESIGN CANVAS BOARD (8 ARTBOARDS ON PAN/ZOOM STAGE)
+       =================================================================== -->
+  <section id="canvas-view" aria-label="Design Canvas Board">
+    <div id="canvas-stage">
+      <div class="canvas-header-block">
+        <div>
+          <div class="canvas-board-title">Mad Max Gym — Complete 7-Screen Prototype Suite</div>
+          <div class="canvas-board-meta">Drag canvas to pan · Scroll to zoom · Click any artboard to launch Interactive Play Mode directly on that screen</div>
+        </div>
+        <div class="canvas-legend">
+          <span><span class="legend-dot" style="background:#2563EB;"></span>Royal Blue CTA &amp; Active States</span>
+          <span><span class="legend-dot" style="background:#059669;"></span>Access Granted / Active</span>
+          <span><span class="legend-dot" style="background:#D97706;"></span>Expiring Soon / Frozen</span>
+          <span><span class="legend-dot" style="background:#DC2626;"></span>Denied / Expired / Voided</span>
+        </div>
+      </div>
+
+      <!-- Row 1: Auth, Fast Sign-In (Staff), Self-Service Kiosk, Membership Plans -->
+      <div class="canvas-row" id="canvas-row-1"></div>
+      <!-- Row 2: Member Directory, Payments & Receipts, Owner Dashboard, Staff & Settings -->
+      <div class="canvas-row" id="canvas-row-2"></div>
+    </div>
+
+    <!-- Bottom Quick-Focus Dock -->
+    <div class="canvas-dock" id="canvas-dock">
+      <button class="dock-item active" onclick="fitCanvasToView()">All Screens</button>
+      <div class="dock-sep"></div>
+      <button class="dock-item" onclick="focusArtboard('login')">01 Login</button>
+      <button class="dock-item" onclick="focusArtboard('checkin')">02 Sign-In</button>
+      <button class="dock-item" onclick="focusArtboard('kiosk')">02B Kiosk</button>
+      <button class="dock-item" onclick="focusArtboard('plans')">03 Plans</button>
+      <button class="dock-item" onclick="focusArtboard('members')">04 Members</button>
+      <button class="dock-item" onclick="focusArtboard('payments')">05 Payments</button>
+      <button class="dock-item" onclick="focusArtboard('dashboard')">06 Dashboard</button>
+      <button class="dock-item" onclick="focusArtboard('settings')">07 Settings</button>
+      <div class="dock-sep"></div>
+      <span class="dock-hint">Drag to pan · Wheel to zoom</span>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       MODE 2: INTERACTIVE PLAY MODE
+       =================================================================== -->
+  <main id="play-view" class="hidden" aria-label="Interactive Prototype"></main>
+
+  <!-- ===================================================================
+       GLOBAL OVERLAYS: 540px DRAWER, CENTERED MODALS, KEBAB PORTAL, TOASTS
+       =================================================================== -->
+  <div id="drawer-backdrop" class="drawer-backdrop" onclick="handleDrawerBackdropClick(event)">
+    <div id="drawer-panel" class="drawer-panel" onclick="event.stopPropagation()"></div>
+  </div>
+
+  <div id="modal-backdrop" class="modal-backdrop" onclick="handleModalBackdropClick(event)">
+    <div id="modal-box" class="modal-box" onclick="event.stopPropagation()"></div>
+  </div>
+
+  <div id="kebab-portal" class="kebab-portal"></div>
+  <div id="toast-stack" class="toast-stack" aria-live="polite"></div>
+
+  <script>
+    /* =====================================================================
+       SVG ICONS (ZERO EMOJIS — CONSISTENT 1.8px STROKE)
+       ===================================================================== */
+    const MM_SHIELD_SVG = (size = 32) => `
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="${size}" height="${size}" fill="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="g-obs" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#111827"/><stop offset="100%" stop-color="#050608"/></linearGradient>
+          <linearGradient id="g-sil" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#F3F4F6"/><stop offset="50%" stop-color="#D1D5DB"/><stop offset="100%" stop-color="#6B7280"/></linearGradient>
+          <linearGradient id="g-roy" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#3B82F6"/><stop offset="100%" stop-color="#1D4ED8"/></linearGradient>
+        </defs>
+        <path d="M128 14 L224 46 V126 C224 184 182 224 128 244 C74 224 32 184 32 126 V46 L128 14 Z" fill="url(#g-sil)"/>
+        <path d="M128 26 L212 54 V124 C212 174 174 209 128 227 C82 209 44 174 44 124 V54 L128 26 Z" fill="url(#g-roy)"/>
+        <path d="M128 36 L202 61 V123 C202 167 169 199 128 216 C87 199 54 167 54 123 V61 L128 36 Z" fill="url(#g-obs)"/>
+        <path d="M74 114 V74 L94 74 L112 98 L128 76 L144 98 L162 74 L182 74 V114 H164 V95 L146 116 H140 L128 100 L116 116 H110 L92 95 V114 H74 Z" fill="url(#g-sil)"/>
+        <path d="M78 142 H96 V174 L114 152 L128 170 L142 152 L160 174 V142 H178 V186 H158 L128 150 L98 186 H78 V142 Z" fill="url(#g-roy)"/>
+        <rect x="20" y="123" width="216" height="10" rx="3" fill="url(#g-sil)" stroke="#0B0D11" stroke-width="2"/>
+        <rect x="104" y="122" width="48" height="12" rx="2" fill="url(#g-roy)"/>
+        <rect x="20" y="102" width="14" height="52" rx="4" fill="url(#g-sil)" stroke="#0B0D11" stroke-width="2"/>
+        <rect x="36" y="92" width="16" height="72" rx="4" fill="url(#g-sil)" stroke="#0B0D11" stroke-width="2"/>
+        <rect x="222" y="102" width="14" height="52" rx="4" fill="url(#g-sil)" stroke="#0B0D11" stroke-width="2"/>
+        <rect x="204" y="92" width="16" height="72" rx="4" fill="url(#g-sil)" stroke="#0B0D11" stroke-width="2"/>
+      </svg>`;
+
+    const ICONS = {
+      scan: `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><line x1="7" y1="12" x2="17" y2="12"/></svg>`,
+      monitor: `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>`,
+      users: `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+      layers: `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>`,
+      receipt: `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M8 7h8"/><path d="M8 11h8"/><path d="M8 15h5"/></svg>`,
+      chart: `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>`,
+      settings: `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.6.85 1 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>`,
+      logout: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>`,
+      search: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`,
+      plus: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`,
+      kebab: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>`,
+      eye: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`,
+      eyeOff: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`,
+      close: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
+      chevLeft: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>`,
+      chevRight: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>`,
+      qr: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3z"/><path d="M19 19h2v2h-2z"/><path d="M14 20h3"/></svg>`,
+      lock: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`,
+      printer: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>`,
+      check: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
+      alert: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+      snowflake: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="2" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="22"/><path d="m20 16-4-4 4-4"/><path d="m4 8 4 4-4 4"/><path d="m16 4-4 4-4-4"/><path d="m8 20 4-4 4 4"/></svg>`,
+      play: `<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg>`,
+      key: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></svg>`
+    };
+
+    /* =====================================================================
+       MOCK DATABASE & SHARED REACTIVE STATE
+       ===================================================================== */
+    const state = {
+      mode: 'canvas', // 'canvas' | 'play'
+      activeScreen: 'dashboard', // 'login' | 'checkin' | 'kiosk' | 'plans' | 'members' | 'payments' | 'dashboard' | 'settings'
+      sidebarCollapsed: localStorage.getItem('mm_sidebar_collapsed') === 'true',
+      currentUser: { id: 'u-1', name: 'Marcus Reyes', email: 'owner@madmaxgym.ph', role_code: 'ADMIN', role_name: 'Owner / Admin' },
+      loginState: { email: 'owner@madmaxgym.ph', password: 'password123', showPassword: false, error: '' },
+
+      // Screen Filters
+      checkinSearch: '',
+      checkinBanner: null,
+      kioskInput: '',
+      kioskBanner: {
+        type: 'granted',
+        title: 'ACCESS GRANTED — Welcome back, Marco Santos!',
+        detail: 'Monthly Unlimited Access · 22 days remaining',
+        time: '03:24 PM'
+      },
+      planFilter: 'ALL',
+      memberSearch: '',
+      memberStatusFilter: 'ALL',
+      paymentSearch: '',
+      dashboardPeriod: 'today',
+      dashboardLoading: false,
+      settingsTab: 'staff', // 'staff' | 'gym'
+
+      // Dirty Drawer Guard
+      drawerDirty: false,
+      activeDrawer: null,
+
+      // Seed Data
+      plans: [
+        { id: 'p-1', code: 'PASS-DAY', name: 'Walk-In Day Pass', plan_type_code: 'DAY_PASS', duration_days: 1, included_sessions: null, price: 150.00, badge_color_hex: '#374151', description: 'Single full-day gym floor access for walk-in guests.', is_active: true },
+        { id: 'p-2', code: 'PLAN-MONTHLY', name: 'Monthly Unlimited Access', plan_type_code: 'RECURRING', duration_days: 30, included_sessions: null, price: 1500.00, badge_color_hex: '#2563EB', description: 'Unlimited gym access for 30 calendar days including locker use.', is_active: true },
+        { id: 'p-3', code: 'PLAN-QUARTERLY', name: 'Quarterly Strength Pass', plan_type_code: 'RECURRING', duration_days: 90, included_sessions: null, price: 4200.00, badge_color_hex: '#1D4ED8', description: '90-day unlimited access with priority renewal rate.', is_active: true },
+        { id: 'p-4', code: 'PACK-10', name: '10-Visit Flex Pack', plan_type_code: 'SESSION_PACK', duration_days: 90, included_sessions: 10, price: 1200.00, badge_color_hex: '#059669', description: '10 gym visits valid within 90 days. Deducts 1 visit per sign-in.', is_active: true },
+        { id: 'p-5', code: 'PACK-20', name: '20-Visit Athlete Pack', plan_type_code: 'SESSION_PACK', duration_days: 180, included_sessions: 20, price: 2200.00, badge_color_hex: '#059669', description: '20 gym visits valid within 180 days for flexible schedules.', is_active: true }
+      ],
+
+      members: [
+        { id: 'm-1', member_code: 'MEM-2026-0001', name: 'Marco Santos', phone: '09171234567', email: 'marco.santos@email.ph', gender_code: 'MALE', plan_id: 'p-2', plan_name: 'Monthly Unlimited Access', plan_type: 'RECURRING', status_code: 'ACTIVE', start_date: '2026-11-01', end_date: '2026-12-13', remaining_days: 22, remaining_sessions: null, total_visits: 48, last_check_in: 'Today, 03:24 PM', last_check_in_ts: 0 },
+        { id: 'm-2', member_code: 'MEM-2026-0002', name: 'Bea Villanueva', phone: '09182345678', email: 'bea.v@email.ph', gender_code: 'FEMALE', plan_id: 'p-4', plan_name: '10-Visit Flex Pack', plan_type: 'SESSION_PACK', status_code: 'ACTIVE', start_date: '2026-10-15', end_date: '2027-01-13', remaining_days: 53, remaining_sessions: 6, total_visits: 14, last_check_in: 'Yesterday, 06:15 PM', last_check_in_ts: 0 },
+        { id: 'm-3', member_code: 'MEM-2026-0003', name: 'Carlo Mendoza', phone: '09193456789', email: 'carlo.m@email.ph', gender_code: 'MALE', plan_id: 'p-3', plan_name: 'Quarterly Strength Pass', plan_type: 'RECURRING', status_code: 'ACTIVE', start_date: '2026-10-01', end_date: '2026-12-30', remaining_days: 39, remaining_sessions: null, total_visits: 62, last_check_in: 'Today, 07:45 AM', last_check_in_ts: 0 },
+        { id: 'm-4', member_code: 'MEM-2026-0004', name: 'Trisha Lim', phone: '09175551234', email: 'trisha.lim@email.ph', gender_code: 'FEMALE', plan_id: 'p-4', plan_name: '10-Visit Flex Pack', plan_type: 'SESSION_PACK', status_code: 'ACTIVE', start_date: '2026-09-20', end_date: '2026-12-19', remaining_days: 28, remaining_sessions: 2, total_visits: 28, last_check_in: 'Today, 01:10 PM', last_check_in_ts: 0 },
+        { id: 'm-5', member_code: 'MEM-2026-0005', name: 'Paolo Bautista', phone: '09206667890', email: 'paolo.b@email.ph', gender_code: 'MALE', plan_id: 'p-2', plan_name: 'Monthly Unlimited Access', plan_type: 'RECURRING', status_code: 'FROZEN', start_date: '2026-10-20', end_date: '2026-11-29', remaining_days: 8, remaining_sessions: null, total_visits: 19, last_check_in: 'Nov 10, 05:30 PM', last_check_in_ts: 0 },
+        { id: 'm-6', member_code: 'MEM-2026-0006', name: 'Dante Soriano', phone: '09178889012', email: 'dante.s@email.ph', gender_code: 'MALE', plan_id: 'p-2', plan_name: 'Monthly Unlimited Access', plan_type: 'RECURRING', status_code: 'EXPIRED', start_date: '2026-10-15', end_date: '2026-11-14', remaining_days: 0, remaining_sessions: null, total_visits: 33, last_check_in: 'Nov 13, 06:50 PM', last_check_in_ts: 0 },
+        { id: 'm-7', member_code: 'MEM-2026-0007', name: 'Aira Castillo', phone: '09174443210', email: 'aira.c@email.ph', gender_code: 'FEMALE', plan_id: 'p-2', plan_name: 'Monthly Unlimited Access', plan_type: 'RECURRING', status_code: 'ACTIVE', start_date: '2026-10-25', end_date: '2026-11-24', remaining_days: 3, remaining_sessions: null, total_visits: 21, last_check_in: 'Today, 09:12 AM', last_check_in_ts: 0 }
+      ],
+
+      attendanceLogs: [
+        { id: 'a-1', member_code: 'MEM-2026-0001', member_name: 'Marco Santos', plan_name: 'Monthly Unlimited Access', method: 'KIOSK_QR', status: 'GRANTED', snapshot: '22 days left', time: '03:24 PM' },
+        { id: 'a-2', member_code: 'MEM-2026-0006', member_name: 'Dante Soriano', plan_name: 'Monthly Unlimited Access', method: 'KIOSK_CODE', status: 'DENIED_EXPIRED', snapshot: 'Expired Nov 14', time: '02:48 PM' },
+        { id: 'a-3', member_code: 'MEM-2026-0004', member_name: 'Trisha Lim', plan_name: '10-Visit Flex Pack', method: 'STAFF_LOOKUP', status: 'GRANTED', snapshot: '2 visits left', time: '01:10 PM' },
+        { id: 'a-4', member_code: 'MEM-2026-0007', member_name: 'Aira Castillo', plan_name: 'Monthly Unlimited Access', method: 'KIOSK_PHONE', status: 'GRANTED', snapshot: '3 days left', time: '09:12 AM' },
+        { id: 'a-5', member_code: 'MEM-2026-0003', member_name: 'Carlo Mendoza', plan_name: 'Quarterly Strength Pass', method: 'KIOSK_QR', status: 'GRANTED', snapshot: '39 days left', time: '07:45 AM' }
+      ],
+
+      payments: [
+        { id: 'pay-1', invoice_number: 'INV-20261121-0004', member_code: 'MEM-2026-0001', member_name: 'Marco Santos', plan_name: 'Monthly Unlimited Access', method: 'DIGITAL_WALLET', ref: 'GCash • 908412', total: 1500.00, discount_pct: 0, discount_amount: 0, vat: 160.71, vatable: 1339.29, tendered: 1500.00, change: 0, status: 'COMPLETED', cashier: 'Marcus Reyes', created_at: 'Nov 21, 02:15 PM', void_reason: '' },
+        { id: 'pay-2', invoice_number: 'INV-20261121-0003', member_code: 'MEM-2026-0004', member_name: 'Trisha Lim', plan_name: '10-Visit Flex Pack', method: 'CASH', ref: 'Cash Drawer', total: 1080.00, discount_pct: 10, discount_amount: 120.00, vat: 115.71, vatable: 964.29, tendered: 1500.00, change: 420.00, status: 'COMPLETED', cashier: 'Jessa Cruz', created_at: 'Nov 21, 11:40 AM', void_reason: '' },
+        { id: 'pay-3', invoice_number: 'INV-20261121-0002', member_code: 'MEM-2026-0003', member_name: 'Carlo Mendoza', plan_name: 'Quarterly Strength Pass', method: 'DIGITAL_WALLET', ref: 'Maya • 441920', total: 4200.00, discount_pct: 0, discount_amount: 0, vat: 450.00, vatable: 3750.00, tendered: 4200.00, change: 0, status: 'COMPLETED', cashier: 'Marcus Reyes', created_at: 'Nov 21, 09:05 AM', void_reason: '' },
+        { id: 'pay-4', invoice_number: 'INV-20261121-0001', member_code: 'MEM-2026-0006', member_name: 'Dante Soriano', plan_name: 'Walk-In Day Pass', method: 'CASH', ref: 'Cash Drawer', total: 150.00, discount_pct: 0, discount_amount: 0, vat: 16.07, vatable: 133.93, tendered: 200.00, change: 50.00, status: 'VOIDED', cashier: 'Jessa Cruz', created_at: 'Nov 21, 08:12 AM', void_reason: 'Duplicate walk-in entry recorded by mistake.' }
+      ],
+
+      staff: [
+        { id: 'u-1', name: 'Marcus Reyes', email: 'owner@madmaxgym.ph', role_code: 'ADMIN', is_active: true, last_login: 'Today, 08:00 AM' },
+        { id: 'u-2', name: 'Jessa Cruz', email: 'jessa@madmaxgym.ph', role_code: 'FRONT_DESK', is_active: true, last_login: 'Today, 07:30 AM' },
+        { id: 'u-3', name: 'Nico Navarro', email: 'nico@madmaxgym.ph', role_code: 'FRONT_DESK', is_active: true, last_login: 'Yesterday, 05:45 PM' },
+        { id: 'u-4', name: 'Rica Gomez', email: 'rica@madmaxgym.ph', role_code: 'FRONT_DESK', is_active: false, last_login: 'Oct 28, 02:10 PM' }
+      ],
+
+      settings: {
+        gym_name: 'Mad Max Gym',
+        address: '2/F Ironworks Plaza, Quezon Ave, Quezon City',
+        phone: '(02) 8555-0194',
+        tin_number: '123-456-789-00000',
+        tax_rate_pct: 12,
+        receipt_header: 'FORGED IN IRON • BUILT FOR SPEED',
+        receipt_footer: 'MAD MAX GYM • Keep your receipt or QR pass to sign in at the front desk kiosk!',
+        discount_tiers: [
+          { id: 'd-1', name: 'Student Discount', pct: 10, is_active: true },
+          { id: 'd-2', name: 'Senior / PWD', pct: 20, is_active: true },
+          { id: 'd-3', name: 'Referral Promo', pct: 15, is_active: false }
+        ],
+        payment_qr_codes: [
+          { id: 'qr-1', provider: 'GCash', account: 'Mad Max Gym Inc.', number: '0917-888-2026', accent: '#2563EB' },
+          { id: 'qr-2', provider: 'Maya', account: 'Mad Max Gym Inc.', number: '0918-777-2026', accent: '#059669' }
+        ]
+      }
+    };
+
+    /* =====================================================================
+       UTILITIES (CURRENCY, 12% BIR VAT, QR SVG GENERATOR, TOASTS)
+       ===================================================================== */
+    const fmtPHP = (n) => '₱' + Number(n || 0).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const calcVAT = (total) => {
+      const vatable = total / 1.12;
+      const vat = total - vatable;
+      return { vatable: +vatable.toFixed(2), vat: +vat.toFixed(2) };
+    };
+    const nowTimeStr = () => new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+    function generateQrSvg(seedText, size = 132) {
+      let hash = 2166136261;
+      for (let i = 0; i < seedText.length; i++) {
+        hash ^= seedText.charCodeAt(i);
+        hash = Math.imul(hash, 16777619);
+      }
+      const n = 21;
+      const cell = size / n;
+      let rects = '';
+      const isFinder = (r, c) =>
+        (r < 7 && c < 7) || (r < 7 && c >= n - 7) || (r >= n - 7 && c < 7);
+      for (let r = 0; r < n; r++) {
+        for (let c = 0; c < n; c++) {
+          let on = false;
+          if (isFinder(r, c)) {
+            const lr = r < 7 ? r : r - (n - 7);
+            const lc = c < 7 ? c : c - (n - 7);
+            on = lr === 0 || lr === 6 || lc === 0 || lc === 6 || (lr >= 2 && lr <= 4 && lc >= 2 && lc <= 4);
+          } else {
+            const bit = Math.abs((hash ^ (r * 73856093) ^ (c * 19349663)) % 11);
+            on = bit < 5;
+          }
+          if (on) rects += `<rect x="${(c * cell).toFixed(1)}" y="${(r * cell).toFixed(1)}" width="${(cell + 0.3).toFixed(1)}" height="${(cell + 0.3).toFixed(1)}" fill="#0B0D11"/>`;
+        }
+      }
+      return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg"><rect width="${size}" height="${size}" fill="#FFFFFF"/>${rects}</svg>`;
+    }
+
+    function showToast(message, type = 'success') {
+      const stack = document.getElementById('toast-stack');
+      const el = document.createElement('div');
+      el.className = `toast ${type}`;
+      const icon = type === 'error' || type === 'warning' ? ICONS.alert : ICONS.check;
+      el.innerHTML = `<span style="margin-top:1px;flex-shrink:0;">${icon}</span><span>${message}</span>`;
+      stack.appendChild(el);
+      setTimeout(() => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateX(14px)';
+        el.style.transition = 'all 180ms ease';
+        setTimeout(() => el.remove(), 200);
+      }, 3400);
+    }
+
+    function statusBadge(status, remainingDays, remainingSessions) {
+      if (status === 'ACTIVE') {
+        const expiring = (remainingDays !== null && remainingDays <= 3) || (remainingSessions !== null && remainingSessions <= 2);
+        if (expiring) return `<span class="badge badge-amber">Expiring Soon</span>`;
+        return `<span class="badge badge-emerald">Active</span>`;
+      }
+      if (status === 'FROZEN') return `<span class="badge badge-amber">Frozen</span>`;
+      if (status === 'EXPIRED') return `<span class="badge badge-rose">Expired</span>`;
+      if (status === 'COMPLETED') return `<span class="badge badge-emerald">Completed</span>`;
+      if (status === 'VOIDED') return `<span class="badge badge-rose">Voided</span>`;
+      if (status === 'GRANTED') return `<span class="badge badge-emerald">Granted</span>`;
+      if (status && status.startsWith('DENIED')) return `<span class="badge badge-rose">${status.replace('DENIED_', 'Denied: ')}</span>`;
+      return `<span class="badge badge-gray">${status || 'No Plan'}</span>`;
+    }
+
+    /* =====================================================================
+       SIDEBAR SHELL RENDERER
+       ===================================================================== */
+    function renderAppShell(screenId, contentHtml, opts = {}) {
+      const isPreview = !!opts.preview;
+      const collapsed = isPreview ? false : state.sidebarCollapsed;
+      const isAdmin = isPreview ? true : state.currentUser.role_code === 'ADMIN';
+
+      const navGroups = [
+        {
+          label: 'Front Desk',
+          items: [
+            { id: 'checkin', label: 'Fast Sign-In', icon: ICONS.scan },
+            { id: 'kiosk', label: 'Kiosk Mode', icon: ICONS.monitor }
+          ]
+        },
+        {
+          label: 'Members & Plans',
+          items: [
+            { id: 'members', label: 'Members', icon: ICONS.users },
+            { id: 'plans', label: 'Membership Plans', icon: ICONS.layers }
+          ]
+        },
+        {
+          label: 'Operations',
+          items: [
+            { id: 'payments', label: 'Payments & Receipts', icon: ICONS.receipt }
+          ]
+        },
+        ...(isAdmin ? [{
+          label: 'Administration',
+          items: [
+            { id: 'dashboard', label: 'Owner Dashboard', icon: ICONS.chart },
+            { id: 'settings', label: 'Staff & Settings', icon: ICONS.settings }
+          ]
+        }] : [])
+      ];
+
+      const navHtml = navGroups.map(g => `
+        <div>
+          <div class="nav-group-label">${g.label}</div>
+          <div style="display:flex;flex-direction:column;gap:3px;">
+            ${g.items.map(it => `
+              <button class="nav-item ${screenId === it.id ? 'active' : ''}" data-tooltip="${it.label}" ${isPreview ? '' : `onclick="navigate('${it.id}')"`}>
+                ${it.icon}
+                <span class="nav-item-label">${it.label}</span>
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+
+      const initials = state.currentUser.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+
+      return `
+        <div class="app-shell">
+          <aside class="sidebar ${collapsed ? 'collapsed' : ''}">
+            <div class="sidebar-header">
+              <div class="sidebar-brand-wrap">
+                ${MM_SHIELD_SVG(30)}
+                <div class="sidebar-brand-text">
+                  <div class="sidebar-brand-name">MAD MAX GYM</div>
+                  <div class="sidebar-brand-tag">Forged in Iron</div>
+                </div>
+              </div>
+              <button class="sidebar-toggle-btn" title="${collapsed ? 'Expand sidebar' : 'Collapse sidebar'}" ${isPreview ? '' : `onclick="toggleSidebar()"`}>
+                ${collapsed ? ICONS.chevRight : ICONS.chevLeft}
+              </button>
+            </div>
+            <nav class="sidebar-nav">${navHtml}</nav>
+            <div class="sidebar-footer">
+              <div class="staff-chip">
+                <div class="staff-avatar">${initials}</div>
+                <div class="staff-meta">
+                  <div class="staff-name">${state.currentUser.name}</div>
+                  <div class="staff-role">${state.currentUser.role_code === 'ADMIN' ? 'Owner / Admin' : 'Front Desk'}</div>
+                </div>
+              </div>
+              <button class="nav-item" data-tooltip="Log Out" ${isPreview ? '' : `onclick="logout()"`} style="color:#FCA5A5;">
+                ${ICONS.logout}
+                <span class="nav-item-label">Log Out</span>
+              </button>
+            </div>
+          </aside>
+          <div class="main-area">${contentHtml}</div>
+        </div>
+      `;
+    }
+
+    /* =====================================================================
+       SCREEN 1: STAFF LOGIN
+       ===================================================================== */
+    function renderLoginScreen(isPreview = false) {
+      const s = state.loginState;
+      return `
+        <div class="login-screen">
+          <div class="login-brand-panel">
+            <div>
+              <div style="display:flex;align-items:center;gap:12px;">
+                ${MM_SHIELD_SVG(44)}
+                <div>
+                  <div style="font-size:20px;font-weight:900;letter-spacing:0.06em;">MAD MAX GYM</div>
+                  <div class="mono" style="font-size:11px;color:#93C5FD;letter-spacing:0.12em;">FORGED IN IRON · BUILT FOR SPEED</div>
+                </div>
+              </div>
+              <h1 class="login-hero-title">Front-desk precision for high-volume training floors.</h1>
+              <p class="login-hero-copy">Sign members in under two seconds, manage time-based plans and visit packs, and track live floor traffic from one unified terminal.</p>
+            </div>
+            <div class="login-metrics-strip">
+              <div>
+                <div class="login-stat-val">&lt; 2.0s</div>
+                <div class="login-stat-lbl">Kiosk sign-in speed</div>
+              </div>
+              <div>
+                <div class="login-stat-val">12% VAT</div>
+                <div class="login-stat-lbl">BIR-inclusive receipts</div>
+              </div>
+              <div>
+                <div class="login-stat-val">RBAC</div>
+                <div class="login-stat-lbl">Owner &amp; Front Desk</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="login-form-panel">
+            <div class="login-card">
+              <h2 style="font-size:22px;font-weight:800;letter-spacing:-0.02em;color:var(--obsidian);">Staff Sign In</h2>
+              <p style="font-size:13.5px;color:var(--steel);margin:4px 0 22px;">Enter your staff email and password to open your workspace.</p>
+
+              ${s.error ? `<div style="background:var(--rose-bg);border:1px solid var(--rose-border);color:#B91C1C;padding:10px 12px;border-radius:8px;font-size:12.5px;font-weight:500;margin-bottom:16px;">${s.error}</div>` : ''}
+
+              <form ${isPreview ? 'onsubmit="return false;"' : 'onsubmit="submitLogin(event)"'}>
+                <div class="field-group">
+                  <label class="field-label">Email Address<span class="req">*</span></label>
+                  <input id="${isPreview ? 'p-login-email' : 'login-email'}" class="input" type="email" value="${s.email}" placeholder="name@madmaxgym.ph" ${isPreview ? '' : `oninput="state.loginState.email=this.value;state.loginState.error=''"`}/>
+                </div>
+                <div class="field-group">
+                  <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <label class="field-label">Password<span class="req">*</span></label>
+                    <button type="button" style="font-size:12px;font-weight:600;color:var(--royal);" ${isPreview ? '' : `onclick="openForgotPasswordModal()"`}>Forgot password?</button>
+                  </div>
+                  <div class="password-wrap">
+                    <input id="${isPreview ? 'p-login-pass' : 'login-pass'}" class="input" type="${s.showPassword ? 'text' : 'password'}" value="${s.password}" placeholder="Enter your password" ${isPreview ? '' : `oninput="state.loginState.password=this.value;state.loginState.error=''"`}/>
+                    <button type="button" class="eye-btn" aria-label="Toggle password visibility" ${isPreview ? '' : `onclick="toggleLoginPassword()"`}>
+                      ${s.showPassword ? ICONS.eyeOff : ICONS.eye}
+                    </button>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg" style="width:100%;margin-top:6px;">Sign In</button>
+              </form>
+
+              <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--silver-line);display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--steel);">
+                <span>Quick demo accounts:</span>
+                <div style="display:flex;gap:6px;">
+                  <button class="btn btn-secondary btn-sm" ${isPreview ? '' : `onclick="fillDemoLogin('owner@madmaxgym.ph')"`}>Owner</button>
+                  <button class="btn btn-secondary btn-sm" ${isPreview ? '' : `onclick="fillDemoLogin('jessa@madmaxgym.ph')"`}>Front Desk</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    /* =====================================================================
+       SCREEN 2A: FAST GYM SIGN-IN (STAFF LOOKUP MODE)
+       ===================================================================== */
+    function renderCheckinScreen(isPreview = false) {
+      const q = isPreview ? '' : state.checkinSearch.trim().toLowerCase();
+      const filtered = state.members.filter(m =>
+        !q || m.name.toLowerCase().includes(q) || m.member_code.toLowerCase().includes(q) || m.phone.includes(q)
+      );
+
+      const banner = !isPreview && state.checkinBanner ? `
+        <div style="margin-bottom:18px;padding:14px 18px;border-radius:10px;border:1px solid ${state.checkinBanner.type === 'granted' ? 'var(--emerald-border)' : state.checkinBanner.type === 'warn' ? 'var(--amber-border)' : 'var(--rose-border)'};background:${state.checkinBanner.type === 'granted' ? 'var(--emerald-bg)' : state.checkinBanner.type === 'warn' ? 'var(--amber-bg)' : 'var(--rose-bg)'};display:flex;align-items:center;justify-content:space-between;gap:14px;">
+          <div>
+            <div style="font-weight:700;font-size:14.5px;color:${state.checkinBanner.type === 'granted' ? '#065F46' : state.checkinBanner.type === 'warn' ? '#92400E' : '#991B1B'};">${state.checkinBanner.title}</div>
+            <div style="font-size:13px;color:var(--gunmetal);margin-top:2px;">${state.checkinBanner.detail}</div>
+          </div>
+          ${state.checkinBanner.memberId && state.checkinBanner.type === 'denied' ? `<button class="btn btn-primary btn-sm" onclick="openPaymentModal('${state.checkinBanner.memberId}')">Renew / Buy Day Pass</button>` : `<button class="btn btn-ghost btn-sm" onclick="state.checkinBanner=null;renderPlay();">Dismiss</button>`}
+        </div>
+      ` : '';
+
+      const content = `
+        <div class="topbar">
+          <div class="topbar-left">
+            <div>
+              <div class="page-title">Fast Gym Sign-In Terminal</div>
+              <div class="page-subtitle">Search by member name, code, or phone number to log attendance</div>
+            </div>
+          </div>
+          <div class="topbar-actions">
+            <button class="btn btn-secondary" ${isPreview ? '' : `onclick="openPaymentModal(null, true)"`}>${ICONS.plus} Quick Walk-In Day Pass</button>
+            <button class="btn btn-dark" ${isPreview ? '' : `onclick="navigate('kiosk')"`}>${ICONS.monitor} Launch Fullscreen Kiosk</button>
+          </div>
+        </div>
+        <div class="page-scroll">
+          ${banner}
+          <div class="checkin-grid">
+            <!-- Left: Staff Member Lookup -->
+            <div class="surface-card">
+              <div class="table-toolbar">
+                <div class="search-box" style="max-width:100%;">
+                  ${ICONS.search}
+                  <input class="input" placeholder="Search Name, MEM-2026-XXXX, or 0917..." value="${isPreview ? '' : state.checkinSearch}" ${isPreview ? '' : `oninput="state.checkinSearch=this.value;renderPlay()"`}/>
+                </div>
+              </div>
+              <div class="data-table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Member</th>
+                      <th>Plan &amp; Remaining</th>
+                      <th>Status</th>
+                      <th style="text-align:right;">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${filtered.map(m => {
+                      const rem = m.plan_type === 'SESSION_PACK'
+                        ? `<span class="mono" style="font-weight:700;">${m.remaining_sessions} visits</span> left`
+                        : `<span class="mono" style="font-weight:700;">${m.remaining_days} days</span> left`;
+                      return `
+                        <tr>
+                          <td>
+                            <div style="font-weight:600;">${m.name}</div>
+                            <div class="mono" style="font-size:12px;color:var(--steel);">${m.member_code} · ${m.phone}</div>
+                          </td>
+                          <td>
+                            <div style="font-size:13px;font-weight:500;">${m.plan_name}</div>
+                            <div style="font-size:12px;color:var(--steel);">${rem}</div>
+                          </td>
+                          <td>${statusBadge(m.status_code, m.remaining_days, m.remaining_sessions)}</td>
+                          <td style="text-align:right;">
+                            ${m.status_code === 'ACTIVE'
+                              ? `<button class="btn btn-primary btn-sm" ${isPreview ? '' : `onclick="processCheckIn('${m.member_code}', 'STAFF_LOOKUP')"`}>Sign In</button>`
+                              : `<button class="btn btn-secondary btn-sm" ${isPreview ? '' : `onclick="processCheckIn('${m.member_code}', 'STAFF_LOOKUP')"`}>Verify</button>`
+                            }
+                          </td>
+                        </tr>
+                      `;
+                    }).join('')}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Right: Today's Live Usage Feed -->
+            <div class="surface-card">
+              <div class="table-toolbar">
+                <div>
+                  <div style="font-weight:700;font-size:15px;">Today's Sign-In Feed</div>
+                  <div style="font-size:12.5px;color:var(--steel);">Immutable attendance audit log</div>
+                </div>
+                <span class="badge badge-royal mono">${state.attendanceLogs.filter(a => a.status === 'GRANTED').length} Granted</span>
+              </div>
+              <div class="data-table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Athlete</th>
+                      <th>Status</th>
+                      <th style="text-align:right;">Time</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${state.attendanceLogs.slice(0, 7).map(a => `
+                      <tr>
+                        <td>
+                          <div style="font-weight:600;">${a.member_name}</div>
+                          <div class="mono" style="font-size:11.5px;color:var(--steel);">${a.member_code} · ${a.snapshot}</div>
+                        </td>
+                        <td>${statusBadge(a.status)}</td>
+                        <td class="mono" style="text-align:right;font-size:12px;color:var(--steel);">${a.time}</td>
+                      </tr>
+                    `).join('')}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      return renderAppShell('checkin', content, { preview: isPreview });
+    }
+
+    /* =====================================================================
+       SCREEN 2B: FULLSCREEN SELF-SERVICE KIOSK
+       ===================================================================== */
+    function renderKioskScreen(isPreview = false) {
+      const b = state.kioskBanner;
+      return `
+        <div class="kiosk-screen">
+          <div class="kiosk-topbar">
+            <div style="display:flex;align-items:center;gap:12px;">
+              ${MM_SHIELD_SVG(38)}
+              <div>
+                <div style="font-size:17px;font-weight:900;letter-spacing:0.06em;">MAD MAX GYM</div>
+                <div class="mono" style="font-size:11px;color:#93C5FD;">SELF-SERVICE CHECK-IN KIOSK</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px;">
+              <div class="mono" style="font-size:14px;color:var(--silver);">${nowTimeStr()}</div>
+              <button class="btn btn-dark btn-sm" ${isPreview ? '' : `onclick="openExitKioskModal()"`}>${ICONS.lock} Exit Kiosk</button>
+            </div>
+          </div>
+
+          <div class="kiosk-center">
+            <div>
+              <h1 class="kiosk-heading">Scan QR Pass or Enter Member Code</h1>
+              <p class="kiosk-sub" style="margin-top:6px;">Type your code (e.g. 0001 or MEM-2026-0001) or registered phone number, then press Enter.</p>
+            </div>
+
+            <form class="kiosk-input-row" ${isPreview ? 'onsubmit="return false;"' : 'onsubmit="submitKioskCheckIn(event)"'}>
+              <input id="${isPreview ? 'p-kiosk-in' : 'kiosk-input'}" class="kiosk-input" placeholder="MEM-2026-0001 or 0917..." value="${isPreview ? 'MEM-2026-0001' : state.kioskInput}" ${isPreview ? '' : `oninput="state.kioskInput=this.value"`} autocomplete="off"/>
+              <button type="submit" class="btn btn-primary" style="height:58px;padding:0 28px;font-size:16px;border-radius:12px;">Sign In</button>
+            </form>
+
+            ${b ? `
+              <div class="kiosk-banner ${b.type}">
+                <div>
+                  <div style="font-size:20px;font-weight:800;letter-spacing:-0.02em;color:${b.type === 'granted' ? '#6EE7B7' : b.type === 'warn' ? '#FCD34D' : '#FCA5A5'};">${b.title}</div>
+                  <div style="font-size:14px;color:#E5E7EB;margin-top:4px;">${b.detail}</div>
+                </div>
+                <div class="mono" style="font-size:13px;color:var(--silver);white-space:nowrap;">${b.time}</div>
+              </div>
+            ` : ''}
+
+            <div style="margin-top:4px;">
+              <div style="font-size:12px;color:#6B7280;margin-bottom:8px;">Test instant Kiosk scenarios (click to simulate scan):</div>
+              <div class="kiosk-quick-chips">
+                <button class="kiosk-chip" ${isPreview ? '' : `onclick="simulateKiosk('0001')"`}>0001 · Active Monthly</button>
+                <button class="kiosk-chip" ${isPreview ? '' : `onclick="simulateKiosk('0002')"`}>0002 · 10-Visit Pack</button>
+                <button class="kiosk-chip" ${isPreview ? '' : `onclick="simulateKiosk('0004')"`}>0004 · Expiring (2 visits)</button>
+                <button class="kiosk-chip" ${isPreview ? '' : `onclick="simulateKiosk('0005')"`}>0005 · Frozen</button>
+                <button class="kiosk-chip" ${isPreview ? '' : `onclick="simulateKiosk('0006')"`}>0006 · Expired</button>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid #1E2533;padding-top:16px;font-size:12px;color:#6B7280;">
+            <span>5-minute duplicate scan cooldown active · Atomic visit pack deduction</span>
+            <span class="mono">KIOSK TERMINAL #01 · READY</span>
+          </div>
+        </div>
+      `;
+    }
+
+    /* =====================================================================
+       SCREEN 3: MEMBERSHIP PLANS & VISIT PACKS
+       ===================================================================== */
+    function renderPlansScreen(isPreview = false) {
+      const f = isPreview ? 'ALL' : state.planFilter;
+      const list = state.plans.filter(p => f === 'ALL' || p.plan_type_code === f);
+      const typeLabel = { DAY_PASS: 'Day Pass', RECURRING: 'Time-Based', SESSION_PACK: 'Visit Pack' };
+
+      const content = `
+        <div class="topbar">
+          <div class="topbar-left">
+            <div>
+              <div class="page-title">Membership Plans &amp; Visit Packs</div>
+              <div class="page-subtitle">Configure time-based passes and session packs (12% BIR VAT-inclusive)</div>
+            </div>
+          </div>
+          <div class="topbar-actions">
+            <button class="btn btn-primary" ${isPreview ? '' : `onclick="openPlanDrawer()"`}>${ICONS.plus} New Plan</button>
+          </div>
+        </div>
+        <div class="page-scroll">
+          <div class="surface-card">
+            <div class="table-toolbar">
+              <div class="pill-group">
+                ${['ALL', 'DAY_PASS', 'RECURRING', 'SESSION_PACK'].map(t => `
+                  <button class="pill-btn ${f === t ? 'active' : ''}" ${isPreview ? '' : `onclick="state.planFilter='${t}';renderPlay()"`}>
+                    ${t === 'ALL' ? 'All Plans' : typeLabel[t]}
+                  </button>
+                `).join('')}
+              </div>
+              <div style="font-size:12.5px;color:var(--steel);">${list.length} configured plans</div>
+            </div>
+            <div class="data-table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Plan &amp; Code</th>
+                    <th>Type</th>
+                    <th>Validity &amp; Quota</th>
+                    <th>Price (12% VAT-Incl.)</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${list.map(p => {
+                    const { vat } = calcVAT(p.price);
+                    return `
+                      <tr>
+                        <td>
+                          <div style="display:flex;align-items:center;gap:10px;">
+                            <span style="width:10px;height:10px;border-radius:99px;background:${p.badge_color_hex};flex-shrink:0;"></span>
+                            <div>
+                              <div style="font-weight:600;">${p.name}</div>
+                              <div class="mono" style="font-size:12px;color:var(--steel);">${p.code}</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td><span class="badge ${p.plan_type_code === 'SESSION_PACK' ? 'badge-emerald' : p.plan_type_code === 'RECURRING' ? 'badge-royal' : 'badge-gray'}">${typeLabel[p.plan_type_code]}</span></td>
+                        <td>
+                          <div class="mono" style="font-weight:600;">${p.duration_days} ${p.duration_days === 1 ? 'day' : 'days'}</div>
+                          <div style="font-size:12px;color:var(--steel);">${p.included_sessions ? `${p.included_sessions} included visits` : 'Unlimited visits'}</div>
+                        </td>
+                        <td>
+                          <div class="mono" style="font-weight:700;font-size:14.5px;">${fmtPHP(p.price)}</div>
+                          <div class="mono" style="font-size:11.5px;color:var(--steel);">Incl. ${fmtPHP(vat)} VAT</div>
+                        </td>
+                        <td>
+                          <div class="td-kebab-cell">
+                            ${p.is_active ? '<span class="badge badge-emerald">Active</span>' : '<span class="badge badge-gray">Archived</span>'}
+                            <button class="kebab-trigger" aria-label="Plan actions" ${isPreview ? '' : `onclick="openKebab(event, 'plan', '${p.id}')"`}>${ICONS.kebab}</button>
+                          </div>
+                        </td>
+                      </tr>
+                    `;
+                  }).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      `;
+      return renderAppShell('plans', content, { preview: isPreview });
+    }
+
+    /* =====================================================================
+       SCREEN 4: MEMBER DIRECTORY, SUBSCRIPTIONS & QR PASS
+       ===================================================================== */
+    function renderMembersScreen(isPreview = false) {
+      const q = isPreview ? '' : state.memberSearch.trim().toLowerCase();
+      const sf = isPreview ? 'ALL' : state.memberStatusFilter;
+      const list = state.members.filter(m => {
+        const matchQ = !q || m.name.toLowerCase().includes(q) || m.member_code.toLowerCase().includes(q) || m.phone.includes(q);
+        const matchS = sf === 'ALL' || m.status_code === sf;
+        return matchQ && matchS;
+      });
+
+      const content = `
+        <div class="topbar">
+          <div class="topbar-left">
+            <div>
+              <div class="page-title">Member Directory &amp; Subscriptions</div>
+              <div class="page-subtitle">Manage athlete profiles, QR passes, freezes, and date-stacked renewals</div>
+            </div>
+          </div>
+          <div class="topbar-actions">
+            <button class="btn btn-primary" ${isPreview ? '' : `onclick="openMemberDrawer()"`}>${ICONS.plus} New Member</button>
+          </div>
+        </div>
+        <div class="page-scroll">
+          <div class="surface-card">
+            <div class="table-toolbar">
+              <div class="search-box">
+                ${ICONS.search}
+                <input class="input" placeholder="Search member name, code, or phone..." value="${isPreview ? '' : state.memberSearch}" ${isPreview ? '' : `oninput="state.memberSearch=this.value;renderPlay()"`}/>
+              </div>
+              <div class="pill-group">
+                ${['ALL', 'ACTIVE', 'FROZEN', 'EXPIRED'].map(st => `
+                  <button class="pill-btn ${sf === st ? 'active' : ''}" ${isPreview ? '' : `onclick="state.memberStatusFilter='${st}';renderPlay()"`}>
+                    ${st === 'ALL' ? 'All Members' : st.charAt(0) + st.slice(1).toLowerCase()}
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+            <div class="data-table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Member &amp; Code</th>
+                    <th>Current Plan</th>
+                    <th>Remaining</th>
+                    <th>Total Visits</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${list.map(m => `
+                    <tr>
+                      <td>
+                        <div style="font-weight:600;">${m.name}</div>
+                        <div class="mono" style="font-size:12px;color:var(--steel);">${m.member_code} · ${m.phone}</div>
+                      </td>
+                      <td>
+                        <div style="font-weight:500;">${m.plan_name}</div>
+                        <div style="font-size:12px;color:var(--steel);">Ends ${m.end_date}</div>
+                      </td>
+                      <td class="mono" style="font-weight:700;">
+                        ${m.plan_type === 'SESSION_PACK' ? `${m.remaining_sessions} visits` : `${m.remaining_days} days`}
+                      </td>
+                      <td>
+                        <div class="mono" style="font-weight:600;">${m.total_visits}</div>
+                        <div style="font-size:11.5px;color:var(--steel);">${m.last_check_in}</div>
+                      </td>
+                      <td>
+                        <div class="td-kebab-cell">
+                          ${statusBadge(m.status_code, m.remaining_days, m.remaining_sessions)}
+                          <button class="kebab-trigger" aria-label="Member actions" ${isPreview ? '' : `onclick="openKebab(event, 'member', '${m.id}')"`}>${ICONS.kebab}</button>
+                        </div>
+                      </td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      `;
+      return renderAppShell('members', content, { preview: isPreview });
+    }
+
+    /* =====================================================================
+       SCREEN 5: MEMBERSHIP PAYMENTS & 80mm THERMAL RECEIPTS
+       ===================================================================== */
+    function renderPaymentsScreen(isPreview = false) {
+      const completed = state.payments.filter(p => p.status === 'COMPLETED');
+      const totalRev = completed.reduce((s, p) => s + p.total, 0);
+      const totalVat = completed.reduce((s, p) => s + p.vat, 0);
+      const cashTotal = completed.filter(p => p.method === 'CASH').reduce((s, p) => s + p.total, 0);
+      const qrTotal = completed.filter(p => p.method === 'DIGITAL_WALLET').reduce((s, p) => s + p.total, 0);
+
+      const content = `
+        <div class="topbar">
+          <div class="topbar-left">
+            <div>
+              <div class="page-title">Membership Payments &amp; Receipts</div>
+              <div class="page-subtitle">Record enrollments, renewals, and print 80mm BIR VAT-inclusive receipts</div>
+            </div>
+          </div>
+          <div class="topbar-actions">
+            <button class="btn btn-secondary" ${isPreview ? '' : `onclick="openPaymentModal(null, true)"`}>Walk-In Day Pass</button>
+            <button class="btn btn-primary" ${isPreview ? '' : `onclick="openPaymentModal()"`}>${ICONS.plus} Record Payment</button>
+          </div>
+        </div>
+        <div class="page-scroll">
+          <div class="kpi-grid">
+            <div class="kpi-tile">
+              <div class="kpi-head">Completed Collections</div>
+              <div class="kpi-val">${fmtPHP(totalRev)}</div>
+              <div class="kpi-foot">${completed.length} completed invoices</div>
+            </div>
+            <div class="kpi-tile">
+              <div class="kpi-head">12% BIR Inclusive VAT</div>
+              <div class="kpi-val">${fmtPHP(totalVat)}</div>
+              <div class="kpi-foot">Net Vatable: ${fmtPHP(totalRev - totalVat)}</div>
+            </div>
+            <div class="kpi-tile">
+              <div class="kpi-head">Cash Collections</div>
+              <div class="kpi-val">${fmtPHP(cashTotal)}</div>
+              <div class="kpi-foot">Front-desk drawer</div>
+            </div>
+            <div class="kpi-tile">
+              <div class="kpi-head">QR Digital Wallets</div>
+              <div class="kpi-val">${fmtPHP(qrTotal)}</div>
+              <div class="kpi-foot">GCash &amp; Maya transfers</div>
+            </div>
+          </div>
+
+          <div class="surface-card">
+            <div class="table-toolbar">
+              <div style="font-weight:700;font-size:15px;">Payment Ledger</div>
+              <div style="font-size:12.5px;color:var(--steel);">Prices &amp; plan titles are frozen at transaction time</div>
+            </div>
+            <div class="data-table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Invoice</th>
+                    <th>Member &amp; Plan</th>
+                    <th>Method</th>
+                    <th>Total (Incl. VAT)</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${state.payments.map(p => `
+                    <tr>
+                      <td>
+                        <div class="mono" style="font-weight:700;">${p.invoice_number}</div>
+                        <div style="font-size:12px;color:var(--steel);">${p.created_at} · ${p.cashier}</div>
+                      </td>
+                      <td>
+                        <div style="font-weight:600;">${p.member_name}</div>
+                        <div style="font-size:12px;color:var(--steel);">${p.plan_name}</div>
+                      </td>
+                      <td>
+                        <div style="font-weight:500;">${p.method === 'CASH' ? 'Cash' : 'QR Wallet'}</div>
+                        <div class="mono" style="font-size:11.5px;color:var(--steel);">${p.ref}</div>
+                      </td>
+                      <td>
+                        <div class="mono" style="font-weight:700;${p.status === 'VOIDED' ? 'text-decoration:line-through;color:var(--silver);' : ''}">${fmtPHP(p.total)}</div>
+                        <div class="mono" style="font-size:11.5px;color:var(--steel);">VAT ${fmtPHP(p.vat)}</div>
+                      </td>
+                      <td>
+                        <div class="td-kebab-cell">
+                          ${statusBadge(p.status)}
+                          <button class="kebab-trigger" aria-label="Payment actions" ${isPreview ? '' : `onclick="openKebab(event, 'payment', '${p.id}')"`}>${ICONS.kebab}</button>
+                        </div>
+                      </td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      `;
+      return renderAppShell('payments', content, { preview: isPreview });
+    }
+
+    /* =====================================================================
+       SCREEN 6: OWNER USAGE & MEMBERSHIP DASHBOARD
+       ===================================================================== */
+    function renderDashboardScreen(isPreview = false) {
+      const period = isPreview ? 'today' : state.dashboardPeriod;
+      const loading = !isPreview && state.dashboardLoading;
+
+      const metricsByPeriod = {
+        today: { checkins: 42, unique: 39, denied: 2, active: 128, recurring: 94, packs: 34, rev: 6780, hours: [8, 16, 12, 6, 9, 14, 24, 31, 18] },
+        '7d': { checkins: 286, unique: 112, denied: 9, active: 128, recurring: 94, packs: 34, rev: 41250, hours: [45, 92, 68, 34, 52, 88, 146, 178, 96] },
+        month: { checkins: 1184, unique: 156, denied: 27, active: 128, recurring: 94, packs: 34, rev: 168400, hours: [180, 390, 270, 140, 210, 340, 580, 710, 390] }
+      }[period];
+
+      const hourLabels = ['6A', '8A', '10A', '12P', '2P', '4P', '6P', '8P', '10P'];
+      const maxH = Math.max(...metricsByPeriod.hours);
+
+      const expiringMembers = state.members.filter(m =>
+        m.status_code === 'ACTIVE' && ((m.remaining_days !== null && m.remaining_days <= 7) || (m.remaining_sessions !== null && m.remaining_sessions <= 2))
+      );
+
+      const kpiHtml = loading ? Array(4).fill(`
+        <div class="kpi-tile">
+          <div class="skeleton" style="height:14px;width:55%;"></div>
+          <div class="skeleton" style="height:30px;width:72%;margin:4px 0;"></div>
+          <div class="skeleton" style="height:12px;width:85%;"></div>
+        </div>
+      `).join('') : `
+        <div class="kpi-tile">
+          <div class="kpi-head">Gym Sign-Ins (Granted)</div>
+          <div class="kpi-val">${metricsByPeriod.checkins}</div>
+          <div class="kpi-foot">${metricsByPeriod.unique} unique athletes · ${metricsByPeriod.denied} denied</div>
+        </div>
+        <div class="kpi-tile">
+          <div class="kpi-head">Active Memberships</div>
+          <div class="kpi-val">${metricsByPeriod.active}</div>
+          <div class="kpi-foot">${metricsByPeriod.recurring} recurring · ${metricsByPeriod.packs} visit packs</div>
+        </div>
+        <div class="kpi-tile">
+          <div class="kpi-head">Expiring Soon</div>
+          <div class="kpi-val" style="color:var(--amber);">${expiringMembers.length}</div>
+          <div class="kpi-foot">Within 7 days or &le; 2 visits left</div>
+        </div>
+        <div class="kpi-tile">
+          <div class="kpi-head">Membership Revenue</div>
+          <div class="kpi-val">${fmtPHP(metricsByPeriod.rev)}</div>
+          <div class="kpi-foot">Excludes voided invoices</div>
+        </div>
+      `;
+
+      const content = `
+        <div class="topbar">
+          <div class="topbar-left">
+            <div>
+              <div class="page-title">Owner Usage &amp; Membership Dashboard</div>
+              <div class="page-subtitle">Real-time floor traffic, peak hours, and renewal alerts</div>
+            </div>
+          </div>
+          <div class="topbar-actions">
+            <div class="pill-group">
+              ${[['today', 'Today'], ['7d', 'Last 7 Days'], ['month', 'This Month']].map(([k, lbl]) => `
+                <button class="pill-btn ${period === k ? 'active' : ''}" ${isPreview ? '' : `onclick="switchDashboardPeriod('${k}')"`}>${lbl}</button>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+        <div class="page-scroll">
+          <div class="kpi-grid">${kpiHtml}</div>
+
+          <div style="display:grid;grid-template-columns:1.05fr 0.95fr;gap:20px;">
+            <!-- Peak Usage Hours -->
+            <div class="surface-card surface-card-pad">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                <div>
+                  <div style="font-weight:700;font-size:15px;">Peak Gym Usage Hours</div>
+                  <div style="font-size:12.5px;color:var(--steel);">Granted sign-ins by hour of day (6 AM – 10 PM)</div>
+                </div>
+                <span class="badge badge-royal">Peak: 6–8 PM</span>
+              </div>
+              <div class="chart-bars">
+                ${metricsByPeriod.hours.map((v, i) => {
+                  const pct = Math.max(12, Math.round((v / maxH) * 100));
+                  const isPeak = v >= maxH * 0.78;
+                  return `
+                    <div class="chart-col">
+                      <div class="chart-val">${loading ? '—' : v}</div>
+                      <div class="chart-bar-wrap">
+                        <div class="chart-bar ${isPeak ? 'peak' : ''}" style="height:${loading ? 18 : pct}%;"></div>
+                      </div>
+                      <div class="chart-lbl">${hourLabels[i]}</div>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+
+            <!-- Expiring Soon Alert Table -->
+            <div class="surface-card">
+              <div class="table-toolbar">
+                <div>
+                  <div style="font-weight:700;font-size:15px;">Expiring Soon Action List</div>
+                  <div style="font-size:12.5px;color:var(--steel);">Follow up or renew with date-stacking</div>
+                </div>
+                <span class="badge badge-amber">${expiringMembers.length} Alerts</span>
+              </div>
+              <div class="data-table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Member</th>
+                      <th>Remaining</th>
+                      <th style="text-align:right;">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${expiringMembers.map(m => `
+                      <tr>
+                        <td>
+                          <div style="font-weight:600;">${m.name}</div>
+                          <div class="mono" style="font-size:12px;color:var(--steel);">${m.phone}</div>
+                        </td>
+                        <td>
+                          <span class="badge badge-amber mono">${m.plan_type === 'SESSION_PACK' ? `${m.remaining_sessions} visits left` : `${m.remaining_days} days left`}</span>
+                        </td>
+                        <td style="text-align:right;">
+                          <button class="btn btn-primary btn-sm" ${isPreview ? '' : `onclick="openPaymentModal('${m.id}')"`}>Renew</button>
+                        </td>
+                      </tr>
+                    `).join('')}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      return renderAppShell('dashboard', content, { preview: isPreview });
+    }
+
+    /* =====================================================================
+       SCREEN 7: STAFF ACCESS & GYM SETTINGS
+       ===================================================================== */
+    function renderSettingsScreen(isPreview = false) {
+      const tab = isPreview ? 'staff' : state.settingsTab;
+      const st = state.settings;
+
+      const staffTabHtml = `
+        <div class="surface-card">
+          <div class="table-toolbar">
+            <div>
+              <div style="font-weight:700;font-size:15px;">Staff Accounts &amp; Roles</div>
+              <div style="font-size:12.5px;color:var(--steel);">Reference-driven RBAC (ADMIN &amp; FRONT_DESK) with self-lockout protection</div>
+            </div>
+            <button class="btn btn-primary btn-sm" ${isPreview ? '' : `onclick="openStaffDrawer()"`}>${ICONS.plus} Add Staff</button>
+          </div>
+          <div class="data-table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Staff Member</th>
+                  <th>Role</th>
+                  <th>Last Login</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${state.staff.map(u => `
+                  <tr>
+                    <td>
+                      <div style="font-weight:600;">${u.name}</div>
+                      <div style="font-size:12.5px;color:var(--steel);">${u.email}</div>
+                    </td>
+                    <td><span class="badge ${u.role_code === 'ADMIN' ? 'badge-dark' : 'badge-royal'}">${u.role_code === 'ADMIN' ? 'Owner / Admin' : 'Front Desk'}</span></td>
+                    <td style="font-size:12.5px;color:var(--steel);">${u.last_login}</td>
+                    <td>
+                      <div class="td-kebab-cell">
+                        ${u.is_active ? '<span class="badge badge-emerald">Active</span>' : '<span class="badge badge-gray">Deactivated</span>'}
+                        <button class="kebab-trigger" aria-label="Staff actions" ${isPreview ? '' : `onclick="openKebab(event, 'staff', '${u.id}')"`}>${ICONS.kebab}</button>
+                      </div>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+
+      const gymTabHtml = `
+        <div style="display:grid;grid-template-columns:1.15fr 0.85fr;gap:20px;align-items:start;">
+          <div style="display:flex;flex-direction:column;gap:20px;">
+            <div class="surface-card surface-card-pad">
+              <div style="font-weight:700;font-size:15px;margin-bottom:14px;">Gym Profile &amp; BIR Receipt Details</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <div class="field-group">
+                  <label class="field-label">Gym Name<span class="req">*</span></label>
+                  <input class="input" value="${st.gym_name}" oninput="state.settings.gym_name=this.value"/>
+                </div>
+                <div class="field-group">
+                  <label class="field-label">BIR TIN</label>
+                  <input class="input mono" value="${st.tin_number}" oninput="state.settings.tin_number=this.value"/>
+                </div>
+              </div>
+              <div class="field-group">
+                <label class="field-label">Branch Address<span class="req">*</span></label>
+                <input class="input" value="${st.address}" oninput="state.settings.address=this.value"/>
+              </div>
+              <div style="display:flex;justify-content:flex-end;">
+                <button class="btn btn-primary btn-sm" onclick="showToast('Gym profile saved!', 'success');renderPlay();">Save Changes</button>
+              </div>
+            </div>
+
+            <div class="surface-card surface-card-pad">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                <div>
+                  <div style="font-weight:700;font-size:15px;">Preset Discount Tiers</div>
+                  <div style="font-size:12px;color:var(--steel);">Shown as 1-tap pills inside Payment Checkout</div>
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                ${st.discount_tiers.map(d => `
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border:1px solid var(--silver-line);border-radius:8px;">
+                    <div>
+                      <span style="font-weight:600;">${d.name}</span>
+                      <span class="badge badge-royal mono" style="margin-left:8px;">${d.pct}% OFF</span>
+                    </div>
+                    <button class="btn btn-secondary btn-sm" onclick="toggleDiscountTier('${d.id}')">${d.is_active ? 'Active' : 'Disabled'}</button>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:20px;">
+            <div class="surface-card surface-card-pad">
+              <div style="font-weight:700;font-size:15px;margin-bottom:12px;">Auto-Saved Merchant Payment QRs</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                ${st.payment_qr_codes.map(q => `
+                  <div style="border:1px solid var(--silver-border);border-radius:10px;padding:14px;text-align:center;">
+                    <div style="font-weight:700;font-size:14px;color:${q.accent};margin-bottom:8px;">${q.provider}</div>
+                    <div style="display:inline-block;padding:6px;border:1px solid var(--silver-line);border-radius:8px;">${generateQrSvg(q.provider + q.number, 96)}</div>
+                    <div class="mono" style="font-size:11.5px;color:var(--steel);margin-top:8px;">${q.number}</div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <div class="surface-card surface-card-pad">
+              <div style="font-weight:700;font-size:14px;margin-bottom:12px;">Live 80mm Receipt Sample</div>
+              <div class="thermal-paper" style="width:100%;max-width:290px;">
+                <div class="thermal-center" style="font-weight:700;font-size:13px;">${st.gym_name.toUpperCase()}</div>
+                <div class="thermal-center" style="font-size:11px;">${st.address}</div>
+                <div class="thermal-center" style="font-size:11px;">TIN: ${st.tin_number}</div>
+                <div class="thermal-rule"></div>
+                <div class="thermal-row"><span>Monthly Unlimited</span><span>1,500.00</span></div>
+                <div class="thermal-row"><span>Vatable Sales</span><span>1,339.29</span></div>
+                <div class="thermal-row"><span>12% VAT</span><span>160.71</span></div>
+                <div class="thermal-rule"></div>
+                <div class="thermal-row" style="font-weight:700;"><span>TOTAL</span><span>PHP 1,500.00</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      const content = `
+        <div class="topbar">
+          <div class="topbar-left">
+            <div>
+              <div class="page-title">Staff Access &amp; Gym Settings</div>
+              <div class="page-subtitle">Manage team accounts, BIR receipt configuration, discounts, and QR wallets</div>
+            </div>
+          </div>
+          <div class="topbar-actions">
+            <div class="pill-group">
+              <button class="pill-btn ${tab === 'staff' ? 'active' : ''}" ${isPreview ? '' : `onclick="state.settingsTab='staff';renderPlay()"`}>Staff Accounts</button>
+              <button class="pill-btn ${tab === 'gym' ? 'active' : ''}" ${isPreview ? '' : `onclick="state.settingsTab='gym';renderPlay()"`}>Gym &amp; Payment QRs</button>
+            </div>
+          </div>
+        </div>
+        <div class="page-scroll">${tab === 'staff' ? staffTabHtml : gymTabHtml}</div>
+      `;
+      return renderAppShell('settings', content, { preview: isPreview });
+    }
+
+    /* =====================================================================
+       CANVAS BOARD RENDERING + PAN / ZOOM ENGINE
+       ===================================================================== */
+    const ARTBOARDS = [
+      { id: 'login', row: 1, num: '01', name: 'Staff Login & Password Toggle', render: () => renderLoginScreen(true) },
+      { id: 'checkin', row: 1, num: '02', name: 'Fast Gym Sign-In (Staff Lookup)', render: () => renderCheckinScreen(true) },
+      { id: 'kiosk', row: 1, num: '02B', name: 'Self-Service Kiosk (Fullscreen)', render: () => renderKioskScreen(true) },
+      { id: 'plans', row: 1, num: '03', name: 'Membership Plans & Visit Packs', render: () => renderPlansScreen(true) },
+      { id: 'members', row: 2, num: '04', name: 'Member Directory & QR Pass', render: () => renderMembersScreen(true) },
+      { id: 'payments', row: 2, num: '05', name: 'Payments & 80mm Thermal Receipt', render: () => renderPaymentsScreen(true) },
+      { id: 'dashboard', row: 2, num: '06', name: 'Owner Usage & Membership Dashboard', render: () => renderDashboardScreen(true) },
+      { id: 'settings', row: 2, num: '07', name: 'Staff Access & Gym Settings', render: () => renderSettingsScreen(true) }
+    ];
+
+    const cam = { x: 40, y: 24, scale: 0.28, dragging: false, startX: 0, startY: 0 };
+
+    function renderCanvasBoard() {
+      const r1 = document.getElementById('canvas-row-1');
+      const r2 = document.getElementById('canvas-row-2');
+      const cardHtml = (ab) => `
+        <div class="artboard-wrap" id="ab-${ab.id}">
+          <div class="artboard-meta">
+            <div class="artboard-title-group">
+              <span class="artboard-num">${ab.num}</span>
+              <span class="artboard-name">${ab.name}</span>
+              <span class="artboard-dim">1280 × 780</span>
+            </div>
+            <button class="artboard-play-btn" onclick="launchScreen('${ab.id}')">${ICONS.play} Open Interactive</button>
+          </div>
+          <div class="artboard-frame">
+            ${ab.render()}
+            <div class="artboard-click-veil" title="Click to open ${ab.name} in Interactive Play Mode" onclick="launchScreen('${ab.id}')"></div>
+          </div>
+        </div>
+      `;
+      r1.innerHTML = ARTBOARDS.filter(a => a.row === 1).map(cardHtml).join('');
+      r2.innerHTML = ARTBOARDS.filter(a => a.row === 2).map(cardHtml).join('');
+    }
+
+    function applyCamera() {
+      const stage = document.getElementById('canvas-stage');
+      stage.style.transform = `translate3d(${cam.x}px, ${cam.y}px, 0) scale(${cam.scale})`;
+      document.getElementById('zoom-readout').textContent = Math.round(cam.scale * 100) + '%';
+    }
+
+    function fitCanvasToView() {
+      const vw = window.innerWidth;
+      const vh = window.innerHeight - 54 - 72;
+      const stageW = 5560;
+      const stageH = 1960;
+      const s = Math.min(vw / stageW, vh / stageH) * 0.94;
+      cam.scale = Math.max(0.14, Math.min(1, s));
+      cam.x = (vw - stageW * cam.scale) / 2;
+      cam.y = (vh - stageH * cam.scale) / 2 + 10;
+      applyCamera();
+      highlightDock(0);
+    }
+
+    function setCanvasZoom(targetScale) {
+      const vw = window.innerWidth;
+      const vh = window.innerHeight - 54;
+      const cx = vw / 2;
+      const cy = vh / 2;
+      const clamped = Math.max(0.14, Math.min(1.3, targetScale));
+      const ratio = clamped / cam.scale;
+      cam.x = cx - (cx - cam.x) * ratio;
+      cam.y = cy - (cy - cam.y) * ratio;
+      cam.scale = clamped;
+      applyCamera();
+    }
+
+    function zoomCanvas(delta) { setCanvasZoom(cam.scale + delta); }
+
+    function focusArtboard(id) {
+      const idx = ARTBOARDS.findIndex(a => a.id === id);
+      if (idx < 0) return;
+      const col = idx % 4;
+      const row = Math.floor(idx / 4);
+      const abX = 100 + col * (1280 + 80);
+      const abY = 210 + row * (835 + 96);
+      const vw = window.innerWidth;
+      const vh = window.innerHeight - 54 - 70;
+      cam.scale = Math.min((vw - 120) / 1280, (vh - 100) / 840, 0.92);
+      cam.x = (vw - 1280 * cam.scale) / 2 - abX * cam.scale;
+      cam.y = (vh - 835 * cam.scale) / 2 - abY * cam.scale + 16;
+      applyCamera();
+      highlightDock(idx + 1);
+    }
+
+    function highlightDock(dockIdx) {
+      document.querySelectorAll('#canvas-dock .dock-item').forEach((el, i) => {
+        el.classList.toggle('active', i === dockIdx);
+      });
+    }
+
+    /* Pan & Wheel Listeners */
+    const canvasEl = document.getElementById('canvas-view');
+    canvasEl.addEventListener('mousedown', (e) => {
+      if (e.target.closest('.canvas-dock') || e.target.closest('.artboard-play-btn')) return;
+      cam.dragging = true;
+      cam.startX = e.clientX - cam.x;
+      cam.startY = e.clientY - cam.y;
+      cam.moved = false;
+      canvasEl.classList.add('panning');
+    });
+    window.addEventListener('mousemove', (e) => {
+      if (!cam.dragging) return;
+      const nx = e.clientX - cam.startX;
+      const ny = e.clientY - cam.startY;
+      if (Math.abs(nx - cam.x) > 3 || Math.abs(ny - cam.y) > 3) cam.moved = true;
+      cam.x = nx; cam.y = ny;
+      applyCamera();
+    });
+    window.addEventListener('mouseup', () => {
+      cam.dragging = false;
+      canvasEl.classList.remove('panning');
+    });
+    canvasEl.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const rect = canvasEl.getBoundingClientRect();
+      const mx = e.clientX - rect.left;
+      const my = e.clientY - rect.top;
+      const factor = e.deltaY < 0 ? 1.09 : 0.91;
+      const next = Math.max(0.14, Math.min(1.4, cam.scale * factor));
+      const ratio = next / cam.scale;
+      cam.x = mx - (mx - cam.x) * ratio;
+      cam.y = my - (my - cam.y) * ratio;
+      cam.scale = next;
+      applyCamera();
+    }, { passive: false });
+
+    /* =====================================================================
+       MODE SWITCHING & NAVIGATION
+       ===================================================================== */
+    function setMode(mode) {
+      state.mode = mode;
+      const isCanvas = mode === 'canvas';
+      document.getElementById('canvas-view').classList.toggle('hidden', !isCanvas);
+      document.getElementById('play-view').classList.toggle('hidden', isCanvas);
+      document.getElementById('btn-mode-canvas').classList.toggle('active', isCanvas);
+      document.getElementById('btn-mode-play').classList.toggle('active', !isCanvas);
+      document.getElementById('canvas-zoom-controls').style.display = isCanvas ? 'inline-flex' : 'none';
+      document.getElementById('play-role-controls').style.display = isCanvas ? 'none' : 'inline-flex';
+      if (isCanvas) renderCanvasBoard();
+      else renderPlay();
+    }
+
+    function launchScreen(screenId) {
+      if (cam.moved) { cam.moved = false; return; }
+      state.activeScreen = screenId;
+      setMode('play');
+    }
+
+    function navigate(screenId) {
+      closeKebab();
+      state.activeScreen = screenId;
+      renderPlay();
+    }
+
+    function toggleSidebar() {
+      state.sidebarCollapsed = !state.sidebarCollapsed;
+      localStorage.setItem('mm_sidebar_collapsed', String(state.sidebarCollapsed));
+      renderPlay();
+    }
+
+    function switchDemoRole(role) {
+      if (role === 'ADMIN') {
+        state.currentUser = { id: 'u-1', name: 'Marcus Reyes', email: 'owner@madmaxgym.ph', role_code: 'ADMIN', role_name: 'Owner / Admin' };
+      } else {
+        state.currentUser = { id: 'u-2', name: 'Jessa Cruz', email: 'jessa@madmaxgym.ph', role_code: 'FRONT_DESK', role_name: 'Front Desk' };
+        if (state.activeScreen === 'dashboard' || state.activeScreen === 'settings') state.activeScreen = 'checkin';
+      }
+      document.getElementById('role-btn-admin').classList.toggle('active', role === 'ADMIN');
+      document.getElementById('role-btn-desk').classList.toggle('active', role === 'FRONT_DESK');
+      showToast(`Switched active role to ${role === 'ADMIN' ? 'Owner (ADMIN)' : 'Front Desk (FRONT_DESK)'}`, 'info');
+      renderPlay();
+    }
+
+    function renderPlay() {
+      const root = document.getElementById('play-view');
+      const map = {
+        login: () => renderLoginScreen(false),
+        checkin: () => renderCheckinScreen(false),
+        kiosk: () => renderKioskScreen(false),
+        plans: () => renderPlansScreen(false),
+        members: () => renderMembersScreen(false),
+        payments: () => renderPaymentsScreen(false),
+        dashboard: () => renderDashboardScreen(false),
+        settings: () => renderSettingsScreen(false)
+      };
+      root.innerHTML = (map[state.activeScreen] || map.dashboard)();
+      if (state.activeScreen === 'kiosk') {
+        const inp = document.getElementById('kiosk-input');
+        if (inp) setTimeout(() => inp.focus(), 20);
+      }
+    }
+
+    /* =====================================================================
+       AUTH ACTIONS
+       ===================================================================== */
+    function toggleLoginPassword() {
+      state.loginState.showPassword = !state.loginState.showPassword;
+      renderPlay();
+    }
+    function fillDemoLogin(email) {
+      state.loginState.email = email;
+      state.loginState.password = 'password123';
+      state.loginState.error = '';
+      renderPlay();
+    }
+    function submitLogin(e) {
+      e.preventDefault();
+      const email = state.loginState.email.trim().toLowerCase();
+      const pass = state.loginState.password;
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        state.loginState.error = 'Please enter a valid email address (e.g., name@gym.com).';
+        return renderPlay();
+      }
+      if (!pass.trim()) {
+        state.loginState.error = 'Please enter your password.';
+        return renderPlay();
+      }
+      const user = state.staff.find(u => u.email.toLowerCase() === email);
+      if (!user) {
+        state.loginState.error = 'Invalid email or password. Please verify your credentials.';
+        return renderPlay();
+      }
+      if (!user.is_active) {
+        state.loginState.error = 'This account has been deactivated. Please contact the gym owner.';
+        return renderPlay();
+      }
+      state.currentUser = user;
+      state.loginState.error = '';
+      document.getElementById('role-btn-admin').classList.toggle('active', user.role_code === 'ADMIN');
+      document.getElementById('role-btn-desk').classList.toggle('active', user.role_code === 'FRONT_DESK');
+      state.activeScreen = user.role_code === 'ADMIN' ? 'dashboard' : 'checkin';
+      showToast(`Welcome back, ${user.name}!`, 'success');
+      renderPlay();
+    }
+    function logout() {
+      state.activeScreen = 'login';
+      showToast('Signed out securely.', 'info');
+      renderPlay();
+    }
+
+    /* =====================================================================
+       CHECK-IN & KIOSK LOGIC (WITH 5-MIN COOLDOWN & ATOMIC SESSION DEDUCTION)
+       ===================================================================== */
+    function processCheckIn(rawId, method = 'STAFF_LOOKUP') {
+      const cleaned = rawId.trim().toUpperCase();
+      if (!cleaned) {
+        const msg = 'Please enter your Member Code, Phone Number, or scan your QR Pass.';
+        if (method.startsWith('KIOSK')) {
+          state.kioskBanner = { type: 'denied', title: 'Input Required', detail: msg, time: nowTimeStr() };
+          renderPlay();
+        } else showToast(msg, 'warning');
+        return;
+      }
+      const padded = /^\d{1,4}$/.test(cleaned) ? 'MEM-2026-' + cleaned.padStart(4, '0') : cleaned;
+      const m = state.members.find(x => x.member_code === padded || x.phone === cleaned);
+      if (!m) {
+        const msg = 'Member not found. Please check your Member Code or Phone Number, or ask the Front Desk for assistance.';
+        if (method.startsWith('KIOSK')) state.kioskBanner = { type: 'denied', title: 'Member Not Found', detail: msg, time: nowTimeStr() };
+        else state.checkinBanner = { type: 'denied', title: 'Member Not Found', detail: msg };
+        return renderPlay();
+      }
+
+      const now = Date.now();
+      if (m.last_check_in_ts && (now - m.last_check_in_ts) < 5 * 60 * 1000) {
+        const title = `Already Signed In — ${m.name}`;
+        const detail = `You are already signed in today at ${m.last_check_in}. Zero extra visits deducted.`;
+        if (method.startsWith('KIOSK')) state.kioskBanner = { type: 'granted', title, detail, time: nowTimeStr() };
+        else state.checkinBanner = { type: 'granted', title, detail };
+        showToast('5-minute duplicate scan cooldown prevented double deduction.', 'info');
+        return renderPlay();
+      }
+
+      if (m.status_code === 'FROZEN') {
+        state.attendanceLogs.unshift({ id: 'a-' + now, member_code: m.member_code, member_name: m.name, plan_name: m.plan_name, method, status: 'DENIED_FROZEN', snapshot: 'Frozen', time: nowTimeStr() });
+        const b = { type: 'denied', memberId: m.id, title: `ACCESS DENIED — ${m.name}`, detail: 'Your membership is currently frozen. Please see the Front Desk to unfreeze.', time: nowTimeStr() };
+        if (method.startsWith('KIOSK')) state.kioskBanner = b; else state.checkinBanner = b;
+        return renderPlay();
+      }
+
+      if (m.status_code === 'EXPIRED' || (m.plan_type === 'SESSION_PACK' && m.remaining_sessions <= 0)) {
+        state.attendanceLogs.unshift({ id: 'a-' + now, member_code: m.member_code, member_name: m.name, plan_name: m.plan_name, method, status: 'DENIED_EXPIRED', snapshot: 'Expired', time: nowTimeStr() });
+        const b = { type: 'denied', memberId: m.id, title: `ACCESS DENIED — ${m.name}`, detail: `Membership expired on ${m.end_date}. Please see the Front Desk to renew.`, time: nowTimeStr() };
+        if (method.startsWith('KIOSK')) state.kioskBanner = b; else state.checkinBanner = b;
+        return renderPlay();
+      }
+
+      // GRANTED! Deduct 1 visit atomically if SESSION_PACK
+      let snap = `${m.remaining_days} days left`;
+      if (m.plan_type === 'SESSION_PACK') {
+        m.remaining_sessions = Math.max(0, m.remaining_sessions - 1);
+        snap = `${m.remaining_sessions} visits left`;
+        if (m.remaining_sessions === 0) m.status_code = 'EXPIRED';
+      }
+      m.total_visits += 1;
+      m.last_check_in = `Today, ${nowTimeStr()}`;
+      m.last_check_in_ts = now;
+
+      state.attendanceLogs.unshift({ id: 'a-' + now, member_code: m.member_code, member_name: m.name, plan_name: m.plan_name, method, status: 'GRANTED', snapshot: snap, time: nowTimeStr() });
+
+      const isExpiring = (m.plan_type === 'SESSION_PACK' && m.remaining_sessions <= 2) || (m.plan_type !== 'SESSION_PACK' && m.remaining_days <= 3);
+      const banner = {
+        type: isExpiring ? 'warn' : 'granted',
+        title: `ACCESS GRANTED — Welcome back, ${m.name}!`,
+        detail: `${m.plan_name} · ${snap}${isExpiring ? ' (Expiring Soon — remind to renew)' : ''}`,
+        time: nowTimeStr()
+      };
+      if (method.startsWith('KIOSK')) state.kioskBanner = banner; else state.checkinBanner = banner;
+      showToast(`${m.name} signed in (${snap})`, isExpiring ? 'warning' : 'success');
+      renderPlay();
+    }
+
+    function submitKioskCheckIn(e) {
+      e.preventDefault();
+      const val = state.kioskInput;
+      state.kioskInput = '';
+      processCheckIn(val, 'KIOSK_CODE');
+    }
+    function simulateKiosk(code) {
+      state.kioskInput = '';
+      processCheckIn(code, 'KIOSK_QR');
+    }
+
+    /* =====================================================================
+       DASHBOARD SHIMMER TRANSITION & SETTINGS ACTIONS
+       ===================================================================== */
+    function switchDashboardPeriod(period) {
+      state.dashboardPeriod = period;
+      state.dashboardLoading = true;
+      renderPlay();
+      setTimeout(() => {
+        state.dashboardLoading = false;
+        renderPlay();
+      }, 360);
+    }
+
+    function toggleDiscountTier(id) {
+      const d = state.settings.discount_tiers.find(x => x.id === id);
+      if (d) {
+        d.is_active = !d.is_active;
+        showToast(`${d.name} ${d.is_active ? 'enabled' : 'disabled'}.`, 'info');
+        renderPlay();
+      }
+    }
+
+    /* =====================================================================
+       KEBAB PORTAL MENU (ESCAPES OVERFLOW CONTAINERS)
+       ===================================================================== */
+    function openKebab(e, entity, id) {
+      e.stopPropagation();
+      const portal = document.getElementById('kebab-portal');
+      let items = '';
+      if (entity === 'plan') {
+        const p = state.plans.find(x => x.id === id);
+        items = `
+          <button class="kebab-item" onclick="closeKebab();openPlanDrawer('${id}')">Edit Plan</button>
+          <button class="kebab-item" onclick="closeKebab();togglePlanArchive('${id}')">${p.is_active ? 'Archive Plan' : 'Restore Plan'}</button>
+        `;
+      } else if (entity === 'member') {
+        const m = state.members.find(x => x.id === id);
+        items = `
+          <button class="kebab-item" onclick="closeKebab();openMemberPassModal('${id}')">${ICONS.qr} View QR Pass Card</button>
+          <button class="kebab-item" onclick="closeKebab();openPaymentModal('${id}')">${ICONS.receipt} Renew Membership</button>
+          <button class="kebab-item" onclick="closeKebab();toggleFreezeMember('${id}')">${ICONS.snowflake} ${m.status_code === 'FROZEN' ? 'Unfreeze Plan' : 'Freeze Membership'}</button>
+          <div class="kebab-divider"></div>
+          <button class="kebab-item" onclick="closeKebab();openMemberDrawer('${id}')">Edit Profile</button>
+        `;
+      } else if (entity === 'payment') {
+        const p = state.payments.find(x => x.id === id);
+        items = `
+          <button class="kebab-item" onclick="closeKebab();openReceiptModal('${id}')">${ICONS.printer} View 80mm Receipt</button>
+          ${p.status === 'COMPLETED' && state.currentUser.role_code === 'ADMIN' ? `<div class="kebab-divider"></div><button class="kebab-item danger" onclick="closeKebab();openConfirmVoidModal('${id}')">Void Payment (Owner)</button>` : ''}
+        `;
+      } else if (entity === 'staff') {
+        const u = state.staff.find(x => x.id === id);
+        items = `
+          <button class="kebab-item" onclick="closeKebab();openStaffDrawer('${id}')">Edit Staff</button>
+          <button class="kebab-item" onclick="closeKebab();openResetPasswordModal('${id}')">${ICONS.key} Reset Password</button>
+          <div class="kebab-divider"></div>
+          <button class="kebab-item danger" onclick="closeKebab();toggleStaffActive('${id}')">${u.is_active ? 'Deactivate Account' : 'Reactivate Account'}</button>
+        `;
+      }
+      portal.innerHTML = items;
+      portal.classList.add('open');
+      const rect = e.currentTarget.getBoundingClientRect();
+      const top = Math.min(window.innerHeight - 180, rect.bottom + 4);
+      const left = Math.min(window.innerWidth - 210, rect.right - 196);
+      portal.style.top = top + 'px';
+      portal.style.left = Math.max(12, left) + 'px';
+    }
+    function closeKebab() { document.getElementById('kebab-portal').classList.remove('open'); }
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('#kebab-portal') && !e.target.closest('.kebab-trigger')) closeKebab();
+    });
+
+    function togglePlanArchive(id) {
+      const p = state.plans.find(x => x.id === id);
+      if (p) { p.is_active = !p.is_active; showToast(`Plan "${p.name}" ${p.is_active ? 'restored' : 'archived'}.`, 'info'); renderPlay(); }
+    }
+    function toggleFreezeMember(id) {
+      const m = state.members.find(x => x.id === id);
+      if (!m) return;
+      if (m.status_code === 'FROZEN') {
+        m.status_code = 'ACTIVE';
+        m.remaining_days = (m.remaining_days || 0) + 3;
+        showToast(`${m.name}'s membership unfrozen (+3 frozen days extended).`, 'success');
+      } else if (m.status_code === 'ACTIVE') {
+        m.status_code = 'FROZEN';
+        showToast(`${m.name}'s membership is now FROZEN. Kiosk access paused.`, 'warning');
+      } else {
+        showToast('Only active memberships can be frozen.', 'error');
+      }
+      renderPlay();
+    }
+    function toggleStaffActive(id) {
+      const u = state.staff.find(x => x.id === id);
+      if (!u) return;
+      if (u.id === state.currentUser.id) {
+        return showToast('Self-lockout guard: You cannot deactivate your own active owner account.', 'error');
+      }
+      u.is_active = !u.is_active;
+      showToast(`${u.name} ${u.is_active ? 'reactivated' : 'deactivated'}.`, 'info');
+      renderPlay();
+    }
+
+    /* =====================================================================
+       540px SLIDE-IN CRUD DRAWERS + UNSAVED CHANGES GUARD
+       ===================================================================== */
+    function openDrawer(html) {
+      state.drawerDirty = false;
+      document.getElementById('drawer-panel').innerHTML = html;
+      document.getElementById('drawer-backdrop').classList.add('open');
+    }
+    function requestCloseDrawer(force = false) {
+      if (state.drawerDirty && !force) {
+        openModal(`
+          <div class="modal-header">
+            <div><div class="modal-header-title">Discard Unsaved Changes?</div><div class="modal-header-sub">You have unsaved edits in this form.</div></div>
+          </div>
+          <div class="modal-body" style="font-size:13.5px;color:var(--gunmetal);">
+            Closing this drawer now will discard all unsaved input. Would you like to keep editing or discard your changes?
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal()">Keep Editing</button>
+            <button class="btn btn-danger" onclick="closeModal();requestCloseDrawer(true)">Discard Changes</button>
+          </div>
+        `, 'sm');
+        return;
+      }
+      state.drawerDirty = false;
+      document.getElementById('drawer-backdrop').classList.remove('open');
+    }
+    function handleDrawerBackdropClick(e) { if (e.target.id === 'drawer-backdrop') requestCloseDrawer(false); }
+
+    /* PlanDrawer (540px) */
+    function openPlanDrawer(planId = null) {
+      const p = planId ? state.plans.find(x => x.id === planId) : {
+        id: '', code: '', name: '', plan_type_code: 'RECURRING', duration_days: 30, included_sessions: 10, price: 1500, badge_color_hex: '#2563EB', description: ''
+      };
+      const renderDrawerContent = (draft) => {
+        const { vatable, vat } = calcVAT(Number(draft.price) || 0);
+        const isDay = draft.plan_type_code === 'DAY_PASS';
+        const isPack = draft.plan_type_code === 'SESSION_PACK';
+        return `
+          <div class="drawer-header">
+            <div>
+              <div class="drawer-title">${planId ? 'Edit Membership Plan' : 'New Membership Plan'}</div>
+              <div class="drawer-sub">Configure plan validity, visit quota, and 12% BIR VAT-inclusive PHP pricing.</div>
+            </div>
+            <button class="btn btn-ghost btn-sm" onclick="requestCloseDrawer()">${ICONS.close}</button>
+          </div>
+          <div class="drawer-body">
+            <div class="field-group">
+              <label class="field-label">Plan Name<span class="req">*</span></label>
+              <input id="d-plan-name" class="input" value="${draft.name}" placeholder="e.g., Monthly Unlimited Access" oninput="state.drawerDirty=true"/>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+              <div class="field-group">
+                <label class="field-label">Plan Code<span class="req">*</span></label>
+                <input id="d-plan-code" class="input mono" value="${draft.code}" placeholder="PLAN-MONTHLY" oninput="this.value=this.value.toUpperCase();state.drawerDirty=true"/>
+              </div>
+              <div class="field-group">
+                <label class="field-label">Plan Type<span class="req">*</span></label>
+                <select id="d-plan-type" class="select" onchange="onPlanTypeChange(this.value)">
+                  <option value="DAY_PASS" ${draft.plan_type_code === 'DAY_PASS' ? 'selected' : ''}>Day Pass / Walk-In</option>
+                  <option value="RECURRING" ${draft.plan_type_code === 'RECURRING' ? 'selected' : ''}>Time-Based Recurring</option>
+                  <option value="SESSION_PACK" ${draft.plan_type_code === 'SESSION_PACK' ? 'selected' : ''}>Visit / Session Pack</option>
+                </select>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+              <div class="field-group">
+                <label class="field-label">${isPack ? 'Validity Window (Days)' : 'Duration (Days)'}<span class="req">*</span></label>
+                <input id="d-plan-days" class="input mono" type="number" min="1" value="${isDay ? 1 : draft.duration_days}" ${isDay ? 'readonly' : ''} oninput="state.drawerDirty=true"/>
+              </div>
+              <div class="field-group" id="d-plan-sessions-wrap" style="${isPack ? '' : 'display:none;'}">
+                <label class="field-label">Included Visits<span class="req">*</span></label>
+                <input id="d-plan-sessions" class="input mono" type="number" min="1" value="${draft.included_sessions || 10}" oninput="state.drawerDirty=true"/>
+              </div>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Price (PHP, 12% VAT-Inclusive)<span class="req">*</span></label>
+              <input id="d-plan-price" class="input mono" type="number" min="0" step="0.01" value="${draft.price}" oninput="state.drawerDirty=true;updatePlanVatHint(this.value)"/>
+              <div id="d-plan-vat-hint" class="field-hint mono">Includes ${fmtPHP(vat)} (12% VAT) · Net Base: ${fmtPHP(vatable)}</div>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Description</label>
+              <textarea id="d-plan-desc" class="textarea" placeholder="Optional plan perks or notes..." oninput="state.drawerDirty=true">${draft.description || ''}</textarea>
+            </div>
+          </div>
+          <div class="drawer-footer">
+            <button class="btn btn-secondary" onclick="requestCloseDrawer()">Cancel</button>
+            <button class="btn btn-primary" onclick="savePlanDrawer('${planId || ''}')">${planId ? 'Save Changes' : 'Create Plan'}</button>
+          </div>
+        `;
+      };
+      openDrawer(renderDrawerContent(p));
+    }
+    function onPlanTypeChange(type) {
+      state.drawerDirty = true;
+      const daysEl = document.getElementById('d-plan-days');
+      const sessWrap = document.getElementById('d-plan-sessions-wrap');
+      if (type === 'DAY_PASS') { daysEl.value = 1; daysEl.readOnly = true; sessWrap.style.display = 'none'; }
+      else if (type === 'RECURRING') { daysEl.readOnly = false; sessWrap.style.display = 'none'; }
+      else { daysEl.readOnly = false; sessWrap.style.display = 'flex'; }
+    }
+    function updatePlanVatHint(val) {
+      const { vatable, vat } = calcVAT(Number(val) || 0);
+      document.getElementById('d-plan-vat-hint').textContent = `Includes ${fmtPHP(vat)} (12% VAT) · Net Base: ${fmtPHP(vatable)}`;
+    }
+    function savePlanDrawer(planId) {
+      const name = document.getElementById('d-plan-name').value.trim();
+      const code = document.getElementById('d-plan-code').value.trim().toUpperCase();
+      const plan_type_code = document.getElementById('d-plan-type').value;
+      const duration_days = parseInt(document.getElementById('d-plan-days').value, 10) || 1;
+      const included_sessions = plan_type_code === 'SESSION_PACK' ? (parseInt(document.getElementById('d-plan-sessions').value, 10) || 10) : null;
+      const price = parseFloat(document.getElementById('d-plan-price').value);
+      const description = document.getElementById('d-plan-desc').value.trim();
+
+      if (name.length < 2) return showToast('Plan name must be between 2 and 100 characters.', 'error');
+      if (!/^[A-Z0-9-]{3,40}$/.test(code)) return showToast('Plan code must be 3–40 uppercase letters, numbers, or hyphens.', 'error');
+      if (isNaN(price) || price < 0) return showToast('Please enter a valid price of ₱0.00 or greater.', 'error');
+
+      if (planId) {
+        const idx = state.plans.findIndex(x => x.id === planId);
+        state.plans[idx] = { ...state.plans[idx], name, code, plan_type_code, duration_days, included_sessions, price, description };
+        showToast(`Updated plan "${name}".`, 'success');
+      } else {
+        state.plans.push({ id: 'p-' + Date.now(), name, code, plan_type_code, duration_days, included_sessions, price, badge_color_hex: '#2563EB', description, is_active: true });
+        showToast(`Created plan "${name}" (${code}).`, 'success');
+      }
+      requestCloseDrawer(true);
+      renderPlay();
+    }
+
+    /* MemberDrawer (540px) */
+    function openMemberDrawer(memberId = null) {
+      const m = memberId ? state.members.find(x => x.id === memberId) : { name: '', phone: '', email: '', gender_code: 'MALE' };
+      openDrawer(`
+        <div class="drawer-header">
+          <div>
+            <div class="drawer-title">${memberId ? 'Edit Member Profile' : 'Register New Member'}</div>
+            <div class="drawer-sub">Capture athlete details. A unique MEM-2026-XXXX code and QR pass are assigned automatically.</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="requestCloseDrawer()">${ICONS.close}</button>
+        </div>
+        <div class="drawer-body">
+          <div class="field-group">
+            <label class="field-label">Full Name<span class="req">*</span></label>
+            <input id="d-mem-name" class="input" value="${m.name}" placeholder="e.g., Gabriel Cruz" oninput="state.drawerDirty=true"/>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div class="field-group">
+              <label class="field-label">Mobile / Phone Number<span class="req">*</span></label>
+              <input id="d-mem-phone" class="input mono" value="${m.phone}" placeholder="09171234567" oninput="state.drawerDirty=true"/>
+              <div class="field-hint">Used for fast Kiosk sign-in</div>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Gender<span class="req">*</span></label>
+              <select id="d-mem-gender" class="select" onchange="state.drawerDirty=true">
+                <option value="MALE" ${m.gender_code === 'MALE' ? 'selected' : ''}>Male</option>
+                <option value="FEMALE" ${m.gender_code === 'FEMALE' ? 'selected' : ''}>Female</option>
+                <option value="NON_BINARY" ${m.gender_code === 'NON_BINARY' ? 'selected' : ''}>Non-Binary</option>
+                <option value="PREFER_NOT_TO_SAY" ${m.gender_code === 'PREFER_NOT_TO_SAY' ? 'selected' : ''}>Prefer not to say</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Email Address</label>
+            <input id="d-mem-email" class="input" type="email" value="${m.email || ''}" placeholder="optional@email.ph" oninput="state.drawerDirty=true"/>
+          </div>
+        </div>
+        <div class="drawer-footer">
+          <button class="btn btn-secondary" onclick="requestCloseDrawer()">Cancel</button>
+          <button class="btn btn-primary" onclick="saveMemberDrawer('${memberId || ''}')">${memberId ? 'Save Changes' : 'Register Member'}</button>
+        </div>
+      `);
+    }
+    function saveMemberDrawer(memberId) {
+      const name = document.getElementById('d-mem-name').value.trim();
+      const phone = document.getElementById('d-mem-phone').value.trim();
+      const email = document.getElementById('d-mem-email').value.trim();
+      const gender_code = document.getElementById('d-mem-gender').value;
+      if (name.length < 2) return showToast('Member name must be between 2 and 100 characters.', 'error');
+      if (!/^[0-9+\-\s()]{7,20}$/.test(phone)) return showToast('Please enter a valid phone number (7 to 15 digits, e.g., 09171234567).', 'error');
+
+      if (memberId) {
+        const m = state.members.find(x => x.id === memberId);
+        Object.assign(m, { name, phone, email, gender_code });
+        showToast(`Updated profile for ${name}.`, 'success');
+      } else {
+        const nextNum = String(state.members.length + 1).padStart(4, '0');
+        const newMem = {
+          id: 'm-' + Date.now(),
+          member_code: `MEM-2026-${nextNum}`,
+          name, phone, email, gender_code,
+          plan_id: 'p-2', plan_name: 'Monthly Unlimited Access', plan_type: 'RECURRING',
+          status_code: 'ACTIVE', start_date: '2026-11-21', end_date: '2026-12-21',
+          remaining_days: 30, remaining_sessions: null, total_visits: 0, last_check_in: 'Never', last_check_in_ts: 0
+        };
+        state.members.unshift(newMem);
+        showToast(`Registered ${name} (${newMem.member_code})!`, 'success');
+      }
+      requestCloseDrawer(true);
+      renderPlay();
+    }
+
+    /* StaffDrawer (540px) */
+    function openStaffDrawer(staffId = null) {
+      const u = staffId ? state.staff.find(x => x.id === staffId) : { name: '', email: '', role_code: 'FRONT_DESK' };
+      openDrawer(`
+        <div class="drawer-header">
+          <div>
+            <div class="drawer-title">${staffId ? 'Edit Staff Account' : 'Add Staff Account'}</div>
+            <div class="drawer-sub">Assign Owner (ADMIN) or Front Desk (FRONT_DESK) workspace permissions.</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="requestCloseDrawer()">${ICONS.close}</button>
+        </div>
+        <div class="drawer-body">
+          <div class="field-group">
+            <label class="field-label">Full Name<span class="req">*</span></label>
+            <input id="d-staff-name" class="input" value="${u.name}" placeholder="e.g., Paolo Reyes" oninput="state.drawerDirty=true"/>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Email Address<span class="req">*</span></label>
+            <input id="d-staff-email" class="input" type="email" value="${u.email}" placeholder="staff@madmaxgym.ph" oninput="state.drawerDirty=true"/>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Role<span class="req">*</span></label>
+            <select id="d-staff-role" class="select" onchange="state.drawerDirty=true">
+              <option value="FRONT_DESK" ${u.role_code === 'FRONT_DESK' ? 'selected' : ''}>Front Desk Staff (FRONT_DESK)</option>
+              <option value="ADMIN" ${u.role_code === 'ADMIN' ? 'selected' : ''}>Owner / Administrator (ADMIN)</option>
+            </select>
+          </div>
+        </div>
+        <div class="drawer-footer">
+          <button class="btn btn-secondary" onclick="requestCloseDrawer()">Cancel</button>
+          <button class="btn btn-primary" onclick="saveStaffDrawer('${staffId || ''}')">${staffId ? 'Save Changes' : 'Create Account'}</button>
+        </div>
+      `);
+    }
+    function saveStaffDrawer(staffId) {
+      const name = document.getElementById('d-staff-name').value.trim();
+      const email = document.getElementById('d-staff-email').value.trim().toLowerCase();
+      const role_code = document.getElementById('d-staff-role').value;
+      if (name.length < 2) return showToast('Staff name must be at least 2 characters.', 'error');
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showToast('Please enter a valid email address.', 'error');
+      if (staffId) {
+        const u = state.staff.find(x => x.id === staffId);
+        Object.assign(u, { name, email, role_code });
+        showToast(`Updated staff account for ${name}.`, 'success');
+      } else {
+        state.staff.push({ id: 'u-' + Date.now(), name, email, role_code, is_active: true, last_login: 'Never' });
+        showToast(`Added ${name} (${role_code}).`, 'success');
+      }
+      requestCloseDrawer(true);
+      renderPlay();
+    }
+
+    /* =====================================================================
+       CENTERED MODALS (PAYMENT, 80mm RECEIPT, QR PASS, VOID, RESET, EXIT)
+       ===================================================================== */
+    function openModal(html, size = '') {
+      const box = document.getElementById('modal-box');
+      box.className = `modal-box ${size}`;
+      box.innerHTML = html;
+      document.getElementById('modal-backdrop').classList.add('open');
+    }
+    function closeModal() { document.getElementById('modal-backdrop').classList.remove('open'); }
+    function handleModalBackdropClick(e) { if (e.target.id === 'modal-backdrop') closeModal(); }
+
+    /* PaymentModal (Cash Quick Bills + QR Wallet + 12% VAT + Walk-In) */
+    const payDraft = { memberId: 'm-1', planId: 'p-2', walkIn: false, walkInName: '', walkInPhone: '', discountPct: 0, method: 'CASH', qrProvider: 'GCash', tendered: 1500 };
+
+    function openPaymentModal(memberId = null, walkIn = false) {
+      payDraft.walkIn = walkIn;
+      payDraft.memberId = memberId || state.members[0].id;
+      payDraft.planId = walkIn ? 'p-1' : 'p-2';
+      payDraft.discountPct = 0;
+      payDraft.method = 'CASH';
+      const plan = state.plans.find(p => p.id === payDraft.planId);
+      payDraft.tendered = plan ? plan.price : 150;
+      renderPaymentModal();
+    }
+
+    function renderPaymentModal() {
+      const plan = state.plans.find(p => p.id === payDraft.planId) || state.plans[0];
+      const discountAmt = +(plan.price * (payDraft.discountPct / 100)).toFixed(2);
+      const total = +(plan.price - discountAmt).toFixed(2);
+      const { vatable, vat } = calcVAT(total);
+      const change = payDraft.method === 'CASH' ? Math.max(0, +(payDraft.tendered - total).toFixed(2)) : 0;
+
+      openModal(`
+        <div class="modal-header">
+          <div>
+            <div class="modal-header-title">${payDraft.walkIn ? 'Quick Walk-In Day Pass' : 'Membership Checkout & Payment'}</div>
+            <div class="modal-header-sub">Atomic enrollment + 12% BIR VAT-inclusive receipt generation</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" style="color:#9CA3AF;" onclick="closeModal()">${ICONS.close}</button>
+        </div>
+        <div class="modal-body">
+          ${payDraft.walkIn ? `
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+              <div class="field-group">
+                <label class="field-label">Walk-In Guest Name<span class="req">*</span></label>
+                <input class="input" value="${payDraft.walkInName}" placeholder="e.g., Miguel Tan" oninput="payDraft.walkInName=this.value"/>
+              </div>
+              <div class="field-group">
+                <label class="field-label">Phone Number<span class="req">*</span></label>
+                <input class="input mono" value="${payDraft.walkInPhone}" placeholder="0917..." oninput="payDraft.walkInPhone=this.value"/>
+              </div>
+            </div>
+          ` : `
+            <div class="field-group">
+              <label class="field-label">Select Member<span class="req">*</span></label>
+              <select class="select" onchange="payDraft.memberId=this.value">
+                ${state.members.map(m => `<option value="${m.id}" ${m.id === payDraft.memberId ? 'selected' : ''}>${m.name} (${m.member_code} · ${m.status_code})</option>`).join('')}
+              </select>
+            </div>
+          `}
+
+          <div class="field-group">
+            <label class="field-label">Membership Plan<span class="req">*</span></label>
+            <select class="select" onchange="payDraft.planId=this.value;payDraft.tendered=state.plans.find(x=>x.id===this.value).price;renderPaymentModal()">
+              ${state.plans.filter(p => p.is_active).map(p => `<option value="${p.id}" ${p.id === payDraft.planId ? 'selected' : ''}>${p.name} — ${fmtPHP(p.price)}</option>`).join('')}
+            </select>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Preset Discount Tier</label>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="btn btn-sm ${payDraft.discountPct === 0 ? 'btn-dark' : 'btn-secondary'}" onclick="payDraft.discountPct=0;renderPaymentModal()">None (0%)</button>
+              ${state.settings.discount_tiers.filter(d => d.is_active).map(d => `
+                <button class="btn btn-sm ${payDraft.discountPct === d.pct ? 'btn-dark' : 'btn-secondary'}" onclick="payDraft.discountPct=${d.pct};renderPaymentModal()">${d.name} (${d.pct}%)</button>
+              `).join('')}
+            </div>
+          </div>
+
+          <div style="background:var(--silver-canvas);border:1px solid var(--silver-line);border-radius:10px;padding:14px 16px;margin-bottom:16px;">
+            <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--steel);">
+              <span>Vatable Sales (Net)</span><span class="mono">${fmtPHP(vatable)}</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--steel);margin-top:4px;">
+              <span>12% BIR VAT (Inclusive)</span><span class="mono">${fmtPHP(vat)}</span>
+            </div>
+            ${discountAmt > 0 ? `<div style="display:flex;justify-content:space-between;font-size:13px;color:var(--emerald);margin-top:4px;"><span>Discount (${payDraft.discountPct}%)</span><span class="mono">-${fmtPHP(discountAmt)}</span></div>` : ''}
+            <div style="display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--silver-border);margin-top:10px;padding-top:10px;">
+              <span style="font-weight:700;font-size:14.5px;">Total Payable</span>
+              <span class="mono" style="font-size:24px;font-weight:800;color:var(--obsidian);">${fmtPHP(total)}</span>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Payment Method<span class="req">*</span></label>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+              <button class="btn ${payDraft.method === 'CASH' ? 'btn-primary' : 'btn-secondary'}" onclick="payDraft.method='CASH';renderPaymentModal()">Cash Tender</button>
+              <button class="btn ${payDraft.method === 'DIGITAL_WALLET' ? 'btn-primary' : 'btn-secondary'}" onclick="payDraft.method='DIGITAL_WALLET';renderPaymentModal()">QR Digital Wallet</button>
+            </div>
+          </div>
+
+          ${payDraft.method === 'CASH' ? `
+            <div class="field-group">
+              <label class="field-label">Amount Tendered (PHP)<span class="req">*</span></label>
+              <input class="input mono" type="number" style="font-size:18px;font-weight:700;height:44px;" value="${payDraft.tendered}" oninput="payDraft.tendered=parseFloat(this.value)||0;document.getElementById('pay-change-val').textContent=fmtPHP(Math.max(0,payDraft.tendered-${total}))"/>
+              <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;">
+                <button class="btn btn-secondary btn-sm mono" onclick="payDraft.tendered=${total};renderPaymentModal()">Exact</button>
+                ${[100, 200, 500, 1000, 2000].map(b => `<button class="btn btn-secondary btn-sm mono" onclick="payDraft.tendered=${b};renderPaymentModal()">₱${b.toLocaleString()}</button>`).join('')}
+              </div>
+              <div style="margin-top:10px;display:flex;justify-content:space-between;font-size:13.5px;font-weight:600;">
+                <span>Change Due</span>
+                <span id="pay-change-val" class="mono" style="color:var(--emerald);font-size:16px;">${fmtPHP(change)}</span>
+              </div>
+            </div>
+          ` : `
+            <div style="border:1px solid var(--silver-border);border-radius:10px;padding:14px;text-align:center;">
+              <div style="display:flex;justify-content:center;gap:8px;margin-bottom:12px;">
+                ${state.settings.payment_qr_codes.map(q => `
+                  <button class="btn btn-sm ${payDraft.qrProvider === q.provider ? 'btn-primary' : 'btn-secondary'}" onclick="payDraft.qrProvider='${q.provider}';renderPaymentModal()">${q.provider}</button>
+                `).join('')}
+              </div>
+              <div style="display:inline-block;padding:10px;border:2px solid var(--royal);border-radius:10px;">${generateQrSvg(payDraft.qrProvider + total, 128)}</div>
+              <div class="mono" style="font-size:12px;color:var(--steel);margin-top:8px;">Scan with ${payDraft.qrProvider} · Mad Max Gym Inc.</div>
+            </div>
+          `}
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+          <button class="btn btn-primary" onclick="completePayment()">Complete Payment &amp; Print Receipt</button>
+        </div>
+      `, 'lg');
+    }
+
+    function completePayment() {
+      const plan = state.plans.find(p => p.id === payDraft.planId);
+      const discountAmt = +(plan.price * (payDraft.discountPct / 100)).toFixed(2);
+      const total = +(plan.price - discountAmt).toFixed(2);
+      if (payDraft.method === 'CASH' && payDraft.tendered < total) {
+        return showToast(`Amount tendered (${fmtPHP(payDraft.tendered)}) cannot be less than the total payable (${fmtPHP(total)}).`, 'error');
+      }
+
+      let member;
+      if (payDraft.walkIn) {
+        if (!payDraft.walkInName.trim() || !payDraft.walkInPhone.trim()) {
+          return showToast('Please enter the walk-in guest name and phone number.', 'error');
+        }
+        const nextNum = String(state.members.length + 1).padStart(4, '0');
+        member = {
+          id: 'm-' + Date.now(), member_code: `MEM-2026-${nextNum}`,
+          name: payDraft.walkInName.trim(), phone: payDraft.walkInPhone.trim(), email: '', gender_code: 'PREFER_NOT_TO_SAY',
+          plan_id: plan.id, plan_name: plan.name, plan_type: plan.plan_type_code, status_code: 'ACTIVE',
+          start_date: '2026-11-21', end_date: '2026-11-21', remaining_days: 1, remaining_sessions: null,
+          total_visits: 1, last_check_in: `Today, ${nowTimeStr()}`, last_check_in_ts: Date.now()
+        };
+        state.members.unshift(member);
+        state.attendanceLogs.unshift({ id: 'a-' + Date.now(), member_code: member.member_code, member_name: member.name, plan_name: plan.name, method: 'STAFF_LOOKUP', status: 'GRANTED', snapshot: '1 day left', time: nowTimeStr() });
+      } else {
+        member = state.members.find(m => m.id === payDraft.memberId);
+        member.plan_id = plan.id;
+        member.plan_name = plan.name;
+        member.plan_type = plan.plan_type_code;
+        member.status_code = 'ACTIVE';
+        if (plan.plan_type_code === 'SESSION_PACK') {
+          member.remaining_sessions = (member.remaining_sessions || 0) + plan.included_sessions;
+          member.remaining_days = plan.duration_days;
+        } else {
+          member.remaining_days = (member.remaining_days || 0) + plan.duration_days;
+          member.remaining_sessions = null;
+        }
+      }
+
+      const { vatable, vat } = calcVAT(total);
+      const invNum = `INV-20261121-${String(state.payments.length + 1).padStart(4, '0')}`;
+      const newPay = {
+        id: 'pay-' + Date.now(), invoice_number: invNum,
+        member_code: member.member_code, member_name: member.name, plan_name: plan.name,
+        method: payDraft.method, ref: payDraft.method === 'CASH' ? 'Cash Drawer' : `${payDraft.qrProvider} • ${Math.floor(100000 + Math.random() * 899999)}`,
+        total, discount_pct: payDraft.discountPct, discount_amount: discountAmt, vat, vatable,
+        tendered: payDraft.method === 'CASH' ? payDraft.tendered : total,
+        change: payDraft.method === 'CASH' ? +(payDraft.tendered - total).toFixed(2) : 0,
+        status: 'COMPLETED', cashier: state.currentUser.name, created_at: `Nov 21, ${nowTimeStr()}`, void_reason: ''
+      };
+      state.payments.unshift(newPay);
+      showToast(`Payment ${invNum} recorded! Subscription activated.`, 'success');
+      renderPlay();
+      openReceiptModal(newPay.id);
+    }
+
+    /* 80mm Thermal ReceiptModal */
+    function openReceiptModal(paymentId) {
+      const p = state.payments.find(x => x.id === paymentId);
+      const st = state.settings;
+      openModal(`
+        <div class="modal-header">
+          <div>
+            <div class="modal-header-title">80mm Thermal Receipt Preview</div>
+            <div class="modal-header-sub">${p.invoice_number} · BIR 12% VAT-Inclusive</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" style="color:#9CA3AF;" onclick="closeModal()">${ICONS.close}</button>
+        </div>
+        <div class="modal-body" style="background:var(--silver-canvas);">
+          <div id="print-receipt-area" class="thermal-paper">
+            <div class="thermal-center" style="font-weight:700;font-size:14px;">${st.gym_name.toUpperCase()}</div>
+            <div class="thermal-center" style="font-size:11px;">${st.address}</div>
+            <div class="thermal-center" style="font-size:11px;">Tel: ${st.phone} | TIN: ${st.tin_number}</div>
+            <div class="thermal-center" style="font-size:10.5px;margin-top:4px;">${st.receipt_header}</div>
+            <div class="thermal-rule"></div>
+            <div class="thermal-row"><span>Invoice:</span><span>${p.invoice_number}</span></div>
+            <div class="thermal-row"><span>Date:</span><span>${p.created_at}</span></div>
+            <div class="thermal-row"><span>Cashier:</span><span>${p.cashier}</span></div>
+            <div class="thermal-row"><span>Member:</span><span>${p.member_name}</span></div>
+            <div class="thermal-row"><span>Code:</span><span>${p.member_code}</span></div>
+            <div class="thermal-rule"></div>
+            <div class="thermal-row" style="font-weight:700;"><span>${p.plan_name}</span><span>${p.total.toFixed(2)}</span></div>
+            ${p.discount_amount > 0 ? `<div class="thermal-row"><span>Discount (${p.discount_pct}%)</span><span>-${p.discount_amount.toFixed(2)}</span></div>` : ''}
+            <div class="thermal-rule"></div>
+            <div class="thermal-row"><span>Vatable Sales</span><span>${p.vatable.toFixed(2)}</span></div>
+            <div class="thermal-row"><span>12% VAT (Incl.)</span><span>${p.vat.toFixed(2)}</span></div>
+            <div class="thermal-row" style="font-weight:700;font-size:13px;margin-top:4px;"><span>TOTAL DUE</span><span>PHP ${p.total.toFixed(2)}</span></div>
+            <div class="thermal-row"><span>Tendered (${p.method === 'CASH' ? 'Cash' : 'QR'})</span><span>${p.tendered.toFixed(2)}</span></div>
+            <div class="thermal-row"><span>Change</span><span>${p.change.toFixed(2)}</span></div>
+            <div class="thermal-rule"></div>
+            <div class="thermal-center" style="margin:8px 0;">
+              ${generateQrSvg(p.member_code, 96)}
+              <div style="font-weight:700;margin-top:4px;">${p.member_code}</div>
+            </div>
+            <div class="thermal-center" style="font-size:10.5px;">${st.receipt_footer}</div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+          <button class="btn btn-primary" onclick="window.print()">${ICONS.printer} Print 80mm Receipt</button>
+        </div>
+      `, 'sm');
+    }
+
+    /* Member QR Pass Modal */
+    function openMemberPassModal(memberId) {
+      const m = state.members.find(x => x.id === memberId);
+      openModal(`
+        <div class="modal-header">
+          <div>
+            <div class="modal-header-title">Official Member QR Pass</div>
+            <div class="modal-header-sub">Scan at the front-desk kiosk for 1-second check-in</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" style="color:#9CA3AF;" onclick="closeModal()">${ICONS.close}</button>
+        </div>
+        <div class="modal-body">
+          <div class="pass-card">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <div style="display:flex;align-items:center;gap:10px;">
+                ${MM_SHIELD_SVG(32)}
+                <div>
+                  <div style="font-weight:900;letter-spacing:0.06em;font-size:14px;">MAD MAX GYM</div>
+                  <div class="mono" style="font-size:10.5px;color:#93C5FD;">OFFICIAL MEMBER PASS</div>
+                </div>
+              </div>
+              ${statusBadge(m.status_code, m.remaining_days, m.remaining_sessions)}
+            </div>
+            <div class="pass-qr-frame">${generateQrSvg(m.member_code, 152)}</div>
+            <div style="text-align:center;">
+              <div style="font-size:20px;font-weight:800;">${m.name}</div>
+              <div class="mono" style="font-size:16px;font-weight:700;color:#93C5FD;margin-top:2px;">${m.member_code}</div>
+              <div style="font-size:12.5px;color:var(--silver);margin-top:6px;">${m.plan_name} · Ends ${m.end_date}</div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+          <button class="btn btn-primary" onclick="showToast('Member QR Pass ready for download/print.', 'success')">Download Pass</button>
+        </div>
+      `, 'sm');
+    }
+
+    /* ConfirmVoidModal (Owner Only) */
+    function openConfirmVoidModal(paymentId) {
+      const p = state.payments.find(x => x.id === paymentId);
+      openModal(`
+        <div class="modal-header">
+          <div>
+            <div class="modal-header-title">Void Payment ${p.invoice_number}</div>
+            <div class="modal-header-sub">Atomically voids payment and cancels linked subscription</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" style="color:#9CA3AF;" onclick="closeModal()">${ICONS.close}</button>
+        </div>
+        <div class="modal-body">
+          <div style="background:var(--rose-bg);border:1px solid var(--rose-border);color:#991B1B;padding:12px 14px;border-radius:8px;font-size:13px;margin-bottom:16px;">
+            You are about to void <strong>${fmtPHP(p.total)}</strong> for <strong>${p.member_name}</strong>. This action is audited and cannot be undone.
+          </div>
+          <div class="field-group">
+            <label class="field-label">Audit Void Reason (min. 5 characters)<span class="req">*</span></label>
+            <textarea id="void-reason-input" class="textarea" placeholder="Explain why this invoice is being voided..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+          <button class="btn btn-danger" onclick="confirmVoidPayment('${paymentId}')">Confirm Void</button>
+        </div>
+      `, 'sm');
+    }
+    function confirmVoidPayment(paymentId) {
+      const reason = document.getElementById('void-reason-input').value.trim();
+      if (reason.length < 5) return showToast('Void reason must be at least 5 characters.', 'error');
+      const p = state.payments.find(x => x.id === paymentId);
+      p.status = 'VOIDED';
+      p.void_reason = reason;
+      closeModal();
+      showToast(`Invoice ${p.invoice_number} voided.`, 'warning');
+      renderPlay();
+    }
+
+    /* ResetPasswordModal, ForgotPasswordModal, ExitKioskModal */
+    function openResetPasswordModal(staffId) {
+      const u = state.staff.find(x => x.id === staffId);
+      openModal(`
+        <div class="modal-header">
+          <div><div class="modal-header-title">Reset Staff Password</div><div class="modal-header-sub">${u.name} (${u.email})</div></div>
+          <button class="btn btn-ghost btn-sm" style="color:#9CA3AF;" onclick="closeModal()">${ICONS.close}</button>
+        </div>
+        <div class="modal-body">
+          <div class="field-group">
+            <label class="field-label">New Password (min. 8 characters)<span class="req">*</span></label>
+            <input id="reset-pass-in" class="input" type="password" placeholder="Enter new secure password"/>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+          <button class="btn btn-primary" onclick="if((document.getElementById('reset-pass-in').value||'').length<8){showToast('Password must be at least 8 characters.','error');return;}closeModal();showToast('Password updated for ${u.name}.','success');">Update Password</button>
+        </div>
+      `, 'sm');
+    }
+
+    function openForgotPasswordModal() {
+      openModal(`
+        <div class="modal-header">
+          <div><div class="modal-header-title">Staff Password Recovery</div><div class="modal-header-sub">Owner-assisted password reset</div></div>
+          <button class="btn btn-ghost btn-sm" style="color:#9CA3AF;" onclick="closeModal()">${ICONS.close}</button>
+        </div>
+        <div class="modal-body" style="font-size:13.5px;color:var(--gunmetal);">
+          For front-desk security, staff password resets are performed directly by the Gym Owner under <strong>Staff &amp; Settings</strong>. Contact <strong>Marcus Reyes</strong> (owner@madmaxgym.ph) to reset your account credentials.
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" onclick="closeModal()">Understood</button>
+        </div>
+      `, 'sm');
+    }
+
+    function openExitKioskModal() {
+      openModal(`
+        <div class="modal-header">
+          <div><div class="modal-header-title">Exit Fullscreen Kiosk Mode</div><div class="modal-header-sub">Staff password required to return to Backoffice</div></div>
+          <button class="btn btn-ghost btn-sm" style="color:#9CA3AF;" onclick="closeModal()">${ICONS.close}</button>
+        </div>
+        <div class="modal-body">
+          <div class="field-group">
+            <label class="field-label">Staff Password<span class="req">*</span></label>
+            <input id="kiosk-exit-pass" class="input" type="password" value="password123" placeholder="Enter your staff password"/>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" onclick="closeModal()">Stay in Kiosk</button>
+          <button class="btn btn-primary" onclick="if(!document.getElementById('kiosk-exit-pass').value.trim()){showToast('Please enter your staff password.','error');return;}closeModal();navigate('checkin');showToast('Returned to Staff Sign-In Terminal.','info');">Unlock &amp; Exit</button>
+        </div>
+      `, 'sm');
+    }
+
+    /* Keyboard Shortcuts */
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (document.getElementById('modal-backdrop').classList.contains('open')) return closeModal();
+        if (document.getElementById('drawer-backdrop').classList.contains('open')) return requestCloseDrawer(false);
+        closeKebab();
+      }
+    });
+
+    /* =====================================================================
+       BOOTSTRAP
+       ===================================================================== */
+    document.getElementById('studio-logo-slot').innerHTML = MM_SHIELD_SVG(30);
+    renderCanvasBoard();
+    fitCanvasToView();
+    window.addEventListener('resize', () => { if (state.mode === 'canvas') fitCanvasToView(); });
+  </script>
+</body>
+</html>

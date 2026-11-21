@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" fill="none">
+  <defs>
+    <!-- Obsidian & Carbon Shield Fill -->
+    <linearGradient id="mm-obsidian" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#111827" />
+      <stop offset="55%" stop-color="#0B0D11" />
+      <stop offset="100%" stop-color="#050608" />
+    </linearGradient>
+
+    <!-- Brushed Silver Metallic Gradient -->
+    <linearGradient id="mm-silver" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F3F4F6" />
+      <stop offset="35%" stop-color="#D1D5DB" />
+      <stop offset="70%" stop-color="#9CA3AF" />
+      <stop offset="100%" stop-color="#4B5563" />
+    </linearGradient>
+
+    <!-- Gunmetal Steel Gradient -->
+    <linearGradient id="mm-gunmetal" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#4B5563" />
+      <stop offset="100%" stop-color="#1F2937" />
+    </linearGradient>
+
+    <!-- Electric Royal Blue Gradient -->
+    <linearGradient id="mm-royal" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3B82F6" />
+      <stop offset="50%" stop-color="#2563EB" />
+      <stop offset="100%" stop-color="#1D4ED8" />
+    </linearGradient>
+
+    <!-- Subtle Royal Blue Drop Glow -->
+    <filter id="mm-glow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#1D4ED8" flood-opacity="0.35" />
+    </filter>
+  </defs>
+
+  <!-- Outer Brushed Silver Shield Frame -->
+  <path d="M128 14 L224 46 V126 C224 184 182 224 128 244 C74 224 32 184 32 126 V46 L128 14 Z"
+        fill="url(#mm-silver)" filter="url(#mm-glow)" />
+
+  <!-- Gunmetal Inner Bevel -->
+  <path d="M128 22 L216 51 V125 C216 178 177 215 128 234 C79 215 40 178 40 125 V51 L128 22 Z"
+        fill="url(#mm-gunmetal)" />
+
+  <!-- Royal Blue Shield Accent Rim -->
+  <path d="M128 28 L210 55 V124 C210 173 173 208 128 226 C83 208 46 173 46 124 V55 L128 28 Z"
+        fill="url(#mm-royal)" />
+
+  <!-- Obsidian Black Shield Core -->
+  <path d="M128 36 L202 61 V123 C202 167 169 199 128 216 C87 199 54 167 54 123 V61 L128 36 Z"
+        fill="url(#mm-obsidian)" />
+
+  <!-- Subtle Royal Blue Top Chevron Detail -->
+  <path d="M92 60 L128 48 L164 60 L128 54 Z" fill="#3B82F6" opacity="0.85" />
+
+  <!-- Upper & Lower Interlocking 'MM' Monogram Pillars -->
+  <!-- Top Metric 'M' Crown -->
+  <path d="M74 114 V74 L94 74 L112 98 L128 76 L144 98 L162 74 L182 74 V114 H164 V95 L146 116 H140 L128 100 L116 116 H110 L92 95 V114 H74 Z"
+        fill="url(#mm-silver)" />
+
+  <!-- Lower Anchored 'M' Base Legs with Royal Blue Core Highlight -->
+  <path d="M78 142 H96 V174 L114 152 L128 170 L142 152 L160 174 V142 H178 V186 H158 L128 150 L98 186 H78 V142 Z"
+        fill="url(#mm-royal)" />
+
+  <!-- Heavy Barbell Assembly (Horizontally Interlocked Across Shield Center) -->
+  <!-- Barbell Steel Shaft -->
+  <rect x="20" y="123" width="216" height="10" rx="3" fill="url(#mm-silver)" stroke="#0B0D11" stroke-width="2" />
+  <!-- Center Royal Blue Knurling Collar -->
+  <rect x="104" y="122" width="48" height="12" rx="2" fill="url(#mm-royal)" stroke="#93C5FD" stroke-width="1" />
+
+  <!-- Left Heavy Weight Plates (3-Tier Cast Iron + Silver Bevel) -->
+  <rect x="8" y="114" width="10" height="28" rx="3" fill="url(#mm-gunmetal)" stroke="#D1D5DB" stroke-width="1.5" />
+  <rect x="20" y="102" width="14" height="52" rx="4" fill="url(#mm-silver)" stroke="#0B0D11" stroke-width="2" />
+  <rect x="36" y="92" width="16" height="72" rx="4" fill="url(#mm-silver)" stroke="#0B0D11" stroke-width="2" />
+  <rect x="41" y="100" width="6" height="56" rx="2" fill="url(#mm-royal)" />
+
+  <!-- Right Heavy Weight Plates (3-Tier Cast Iron + Silver Bevel) -->
+  <rect x="238" y="114" width="10" height="28" rx="3" fill="url(#mm-gunmetal)" stroke="#D1D5DB" stroke-width="1.5" />
+  <rect x="222" y="102" width="14" height="52" rx="4" fill="url(#mm-silver)" stroke="#0B0D11" stroke-width="2" />
+  <rect x="204" y="92" width="16" height="72" rx="4" fill="url(#mm-silver)" stroke="#0B0D11" stroke-width="2" />
+  <rect x="209" y="100" width="6" height="56" rx="2" fill="url(#mm-royal)" />
+
+  <!-- Bottom Shield Apex Star / Rivet -->
+  <circle cx="128" cy="196" r="4" fill="#9CA3AF" />
+</svg>

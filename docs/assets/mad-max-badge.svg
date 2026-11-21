@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" width="300" height="300" fill="none">
+  <defs>
+    <path id="topArc" d="M 46,150 A 104,104 0 1,1 254,150" />
+    <path id="bottomArc" d="M 254,150 A 104,104 0 1,1 46,150" />
+  </defs>
+
+  <!-- Outer Stamp Seal Ring (Obsidian Black & Royal Blue Double Ring) -->
+  <circle cx="150" cy="150" r="140" fill="#0B0D11" stroke="#2563EB" stroke-width="6" />
+  <circle cx="150" cy="150" r="128" fill="none" stroke="#9CA3AF" stroke-width="2" stroke-dasharray="6 4" />
+  <circle cx="150" cy="150" r="82" fill="#111827" stroke="#2563EB" stroke-width="3" />
+
+  <!-- Curved Stamp Typography -->
+  <text font-family="'Geist Mono', 'Roboto Mono', monospace" font-size="14.5" font-weight="800" fill="#F3F4F6" letter-spacing="3.5">
+    <textPath href="#topArc" startOffset="50%" text-anchor="middle">
+      ★ MAD MAX GYM ★ EST. 2026 ★
+    </textPath>
+  </text>
+
+  <text font-family="'Geist Mono', 'Roboto Mono', monospace" font-size="13" font-weight="700" fill="#93C5FD" letter-spacing="3">
+    <textPath href="#bottomArc" startOffset="50%" text-anchor="middle">
+      OFFICIAL MEMBER PASS • VERIFIED
+    </textPath>
+  </text>
+
+  <!-- Center Shield & Barbell Crest -->
+  <path d="M150 84 L198 100 V142 C198 174 176 196 150 208 C124 196 102 174 102 142 V100 L150 84 Z"
+        fill="#0B0D11" stroke="#D1D5DB" stroke-width="3" />
+  <!-- Mini 'M' Monogram -->
+  <path d="M122 135 V112 H133 L150 132 L167 112 H178 V135 H168 V124 L150 144 L132 124 V135 H122 Z" fill="#E5E7EB" />
+  <path d="M124 154 H134 V172 L150 156 L166 172 V154 H176 V182 H165 L150 166 L135 182 H124 V154 Z" fill="#2563EB" />
+  <!-- Mini Barbell -->
+  <rect x="92" y="141" width="116" height="6" rx="2" fill="#D1D5DB" />
+  <rect x="136" y="140" width="28" height="8" rx="2" fill="#2563EB" />
+  <rect x="86" y="130" width="7" height="28" rx="2" fill="#9CA3AF" />
+  <rect x="95" y="124" width="8" height="40" rx="2" fill="#E5E7EB" />
+  <rect x="207" y="130" width="7" height="28" rx="2" fill="#9CA3AF" />
+  <rect x="197" y="124" width="8" height="40" rx="2" fill="#E5E7EB" />
+</svg>

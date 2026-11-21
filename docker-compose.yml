@@ -1,0 +1,67 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: mad_max_gym_db
+    restart: unless-stopped
+    ports:
+      - "5435:5432"
+    environment:
+      POSTGRES_DB: mad_max_gym
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-madmax_dev_2026}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d mad_max_gym"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: mad_max_gym_backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "4600:4600"
+    environment:
+      NODE_ENV: production
+      PORT: 4600
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: mad_max_gym
+      DB_USER: postgres
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-madmax_dev_2026}
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:-madmax_dev_2026}@postgres:5432/mad_max_gym
+      JWT_SECRET: ${JWT_SECRET:-9f4c82b7e1a0d634c58f71a92e64b3d8f012a5c9e74b83d160f2a4c7e91b3d58a2e6f409c1b8d3e7}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-12h}
+      CORS_ORIGIN: http://localhost:4601,http://127.0.0.1:4601
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:4600/api/v1/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: /api/v1
+    container_name: mad_max_gym_web
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:4601:80"
+
+volumes:
+  pgdata:
+    driver: local
